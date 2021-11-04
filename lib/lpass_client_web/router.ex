@@ -14,10 +14,18 @@ defmodule LpassClientWeb.Router do
     plug :accepts, ["json"]
   end
 
-  scope "/", LpassClientWeb do
-    pipe_through :browser
+  pipeline :token_auth do
+    plug LpassClientWeb.TokenAuth
+  end
 
-    get "/", PageController, :index
+  scope "/api", LpassClientWeb do
+    pipe_through [:api]
+
+    post "/sign_in", AuthController, :sign_in
+  end
+
+  scope "/api", LpassClientWeb do
+    pipe_through [:api, :token_auth]
   end
 
   # Other scopes may use custom stacks.
