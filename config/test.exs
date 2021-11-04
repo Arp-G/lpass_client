@@ -8,8 +8,7 @@ config :lpass_client, LpassClientWeb.Endpoint,
   server: false
 
 # In test we don't send emails.
-config :lpass_client, LpassClient.Mailer,
-  adapter: Swoosh.Adapters.Test
+config :lpass_client, LpassClient.Mailer, adapter: Swoosh.Adapters.Test
 
 # Print only warnings and errors during test
 config :logger, level: :warn

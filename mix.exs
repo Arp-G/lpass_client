@@ -10,7 +10,8 @@ defmodule LpassClient.MixProject do
       compilers: Mix.compilers(),
       start_permanent: Mix.env() == :prod,
       aliases: aliases(),
-      deps: deps()
+      deps: deps(),
+      dialyzer: [plt_add_deps: :transitive]
     ]
   end
 
@@ -42,7 +43,9 @@ defmodule LpassClient.MixProject do
       {:telemetry_metrics, "~> 0.6"},
       {:telemetry_poller, "~> 1.0"},
       {:jason, "~> 1.2"},
-      {:plug_cowboy, "~> 2.5"}
+      {:plug_cowboy, "~> 2.5"},
+      {:credo, "~> 1.5"},
+      {:dialyxir, "~> 0.5.0", only: [:dev], runtime: false}
     ]
   end
 
@@ -56,10 +59,13 @@ defmodule LpassClient.MixProject do
     [
       setup: ["deps.get", "cmd --cd assets npm install"],
       "assets.deploy": [
-        "cmd --cd assets npm run deploy",              # Use tailwind cli to build css ouput at "priv/static/assets/app.css" 
-                                                       # (Uses --postcss flag with tailwind cli which allows us to add extra postcss plugins via the postcss.config.js)
-        "cmd --cd assets node build.js --deploy",      # Invokes a custom build script for ESBuild to build js
-        "phx.digest"]
+        # Use tailwind cli to build css ouput at "priv/static/assets/app.css" 
+        "cmd --cd assets npm run deploy",
+        # (Uses --postcss flag with tailwind cli which allows us to add extra postcss plugins via the postcss.config.js)
+        # Invokes a custom build script for ESBuild to build js
+        "cmd --cd assets node build.js --deploy",
+        "phx.digest"
+      ]
     ]
   end
 end
