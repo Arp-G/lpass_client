@@ -45,7 +45,9 @@ defmodule LpassClient.MixProject do
       {:jason, "~> 1.2"},
       {:plug_cowboy, "~> 2.5"},
       {:credo, "~> 1.5"},
-      {:dialyxir, "~> 0.5.0", only: [:dev], runtime: false}
+      {:dialyxir, "~> 0.5.0", only: [:dev], runtime: false},
+      {:shorter_maps, "~> 2.0"},
+      {:nimble_csv, "~> 1.1"}
     ]
   end
 

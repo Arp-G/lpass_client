@@ -27,7 +27,8 @@ defmodule LpassClient.Cli do
 
     {resp, _exit_status} =
       System.shell(
-        "echo #{Shell.escape(password)} | LPASS_DISABLE_PINENTRY=1 #{@lpass} login #{cmd_args} #{Shell.escape(username)}"
+        "echo #{Shell.escape(password)} | LPASS_DISABLE_PINENTRY=1 #{@lpass} login #{cmd_args} #{Shell.escape(username)}",
+        stderr_to_stdout: true
       )
 
     resp
@@ -43,7 +44,7 @@ defmodule LpassClient.Cli do
   def logout(args \\ []) do
     default_args = [force: true]
     cmd_args = build_args(default_args, args)
-    {resp, _exit_status} = System.shell("#{@lpass} logout #{cmd_args}")
+    {resp, _exit_status} = System.shell("#{@lpass} logout #{cmd_args}", stderr_to_stdout: true)
     resp
   end
 
@@ -60,10 +61,8 @@ defmodule LpassClient.Cli do
   def ls(args \\ []) do
     default_args = [long: true, sync: "auto"]
     cmd_args = build_args(default_args, args)
-    {resp, _exit_status} = System.shell("#{@lpass} ls #{cmd_args}")
+    {resp, _exit_status} = System.shell("#{@lpass} ls #{cmd_args}", stderr_to_stdout: true)
     resp
-
-    # String.split(resp, "\n") |> Enum.map(&Regex.named_captures(~r/.*\/(?<name>.*) \[id: (?<id>.*)\] \[username: .*\]/, &1))
   end
 
   @doc """
@@ -99,9 +98,13 @@ defmodule LpassClient.Cli do
     ]
 
     cmd_args = build_args(default_args, args)
-    {resp, _exit_status} = System.shell("#{@lpass} show #{cmd_args} #{Shell.escape(name_or_id)}")
+
+    {resp, _exit_status} =
+      System.shell("#{@lpass} show #{cmd_args} #{Shell.escape(name_or_id)}",
+        stderr_to_stdout: true
+      )
+
     resp
-    # Jason.decode!(resp)
   end
 
   @doc """
@@ -144,8 +147,41 @@ defmodule LpassClient.Cli do
   def rm(name_or_id, args \\ []) do
     default_args = [sync: "auto"]
     cmd_args = build_args(default_args, args)
-    {resp, _exit_status} = System.shell("#{@lpass} rm #{cmd_args} #{Shell.escape(name_or_id)}")
+
+    {resp, _exit_status} =
+      System.shell("#{@lpass} rm #{cmd_args} #{Shell.escape(name_or_id)}", stderr_to_stdout: true)
+
     resp
+  end
+
+  @doc """
+  lpass export [--sync=auto|now|no] [--color=auto|never|always] [--fields=FIELDLIST]
+
+  ## Examples
+    iex(9)> LpassClient.Cli.export("correctpass")  
+    "id,name,url,username,password,note,group,last_modified_gmt,last_touch\r\n12345,gmail,http://gmail.com,,mypass,,,1636338918,1636304385\r\567,amazon,http://amazon.com,,amazonpass,,,1636338897,1636304386\r\n"
+
+    iex(27)> LpassClient.Cli.export("incorrectpass")
+    "Please enter the LastPass master password for <test@gmail.com>.\n\nIncorrect master password; please try again.\nMaster Password: Error: Could not authenticate for protected entry.\n"
+  """
+  def export(password, args \\ []) do
+    default_args = [
+      sync: "auto",
+      fields: "id,name,url,username,password,note,group,last_modified_gmt,last_touch"
+    ]
+
+    cmd_args = build_args(default_args, args)
+
+    {resp, _exit_status} =
+      System.shell(
+        "echo #{Shell.escape(password)} | LPASS_DISABLE_PINENTRY=1 #{@lpass} export #{cmd_args}",
+        stderr_to_stdout: true
+      )
+
+    String.trim_leading(
+      resp,
+      "Please enter the LastPass master password for <arpanghoshal3@gmail.com>.\n\nMaster Password: \n"
+    )
   end
 
   @doc """
@@ -159,7 +195,7 @@ defmodule LpassClient.Cli do
     "Not logged in.\n"
   """
   def status(_args \\ []) do
-    {resp, _exit_status} = System.shell("#{@lpass} status")
+    {resp, _exit_status} = System.shell("#{@lpass} status", stderr_to_stdout: true)
     resp
   end
 
@@ -218,7 +254,8 @@ defmodule LpassClient.Cli do
     # Using printf instead of echo preserves lines breaks
     {resp, _exit_status} =
       System.shell(
-        "printf \"#{entry_data}\" | #{@lpass} #{type} #{cmd_args} #{Shell.escape(name_or_id)}"
+        "printf \"#{entry_data}\" | #{@lpass} #{type} #{cmd_args} #{Shell.escape(name_or_id)}",
+        stderr_to_stdout: true
       )
 
     resp
