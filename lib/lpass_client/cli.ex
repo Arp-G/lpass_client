@@ -228,21 +228,21 @@ defmodule LpassClient.Cli do
     cmd_args = build_args(default_args, args)
 
     data = [
-      Username: args[:username],
-      Password: args[:password],
-      URL: args[:url]
+      Username: args[:username] || args["username"],
+      Password: args[:password] || args["password"],
+      URL: args[:url] || args["url"]
     ]
 
     data =
       if type == :edit do
-        name_and_group = if args[:group], do: "#{args[:group]}/", else: ""
+        name_and_group = if args[:group], do: "#{args[:group] || args["group"]}/", else: ""
 
-        [{"Name", "#{name_and_group}#{args[:name]}"} | data]
+        [{"Name", "#{name_and_group}#{args[:name] || args["name"]}"} | data]
       else
         data
       end
 
-    data = if(is_nil(args[:notes]), do: data, else: data ++ [{"Notes", "\n#{args[:notes]}"}])
+    data = if(is_nil(args[:notes]), do: data, else: data ++ [{"Notes", "\n#{args[:notes] || args["notes"]}"}])
 
     entry_data =
       data

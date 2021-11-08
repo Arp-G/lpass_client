@@ -26,6 +26,11 @@ defmodule LpassClientWeb.Router do
 
   scope "/api", LpassClientWeb do
     pipe_through [:api, :token_auth]
+
+    post "/lpass_sign_in", AuthController, :lpass_sign_in
+    post "/sign_out", AuthController, :sign_out
+    resources "/credentials", CredentailsController, except: [:new, :edit]
+    post "/export", CredentailsController, :export
   end
 
   # Other scopes may use custom stacks.

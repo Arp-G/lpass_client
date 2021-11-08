@@ -29,7 +29,8 @@ defmodule LpassClientWeb.TokenAuth do
       Application.get_env(:lpass_client, LpassClient.Auth)[:secret_key],
       Application.get_env(:lpass_client, LpassClient.Auth)[:salt],
       token,
-      max_age: :infinity
+      # 30 days
+      max_age: 86_400 * 30
     )
   end
 
