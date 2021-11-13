@@ -235,12 +235,28 @@ defmodule LpassClient.Cli do
 
     data =
       if type == :edit do
-        name_and_group = if args[:group], do: "#{args[:group] || args["group"]}/", else: ""
 
-        [{"Name", "#{name_and_group}#{args[:name] || args["name"]}"} | data]
+        group = args[:group] || args["group"]
+        name = args[:name] || args["name"]
+
+        name_and_group = cond do
+          group && name -> "#{group}/#{name}"
+          group -> "#{group}/"
+          name -> "/#{name}"
+          true -> "/"
+        end
+
+        [{"Name", name_and_group} | data]
       else
         data
       end
+
+      name_or_id = if type == :add do
+                    group = args[:group] || args["group"]
+                    if group, do: "#{group}/#{name_or_id}", else: "/#{name_or_id}"
+                  else
+                    name_or_id
+                  end
 
     data = if(is_nil(args[:notes]), do: data, else: data ++ [{"Notes", "\n#{args[:notes] || args["notes"]}"}])
 
