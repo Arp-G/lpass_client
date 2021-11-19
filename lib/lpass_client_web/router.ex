@@ -18,6 +18,12 @@ defmodule LpassClientWeb.Router do
     plug LpassClientWeb.TokenAuth
   end
 
+  scope "/", LpassClientWeb do
+    pipe_through :browser
+
+    get "/", AppController, :index
+  end
+
   scope "/api", LpassClientWeb do
     pipe_through [:api]
 

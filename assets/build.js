@@ -15,7 +15,7 @@ const plugins = [
 ]
 
 let opts = {
-  entryPoints: ['js/app.tsx'],
+  entryPoints: ['js/index.tsx'],
   bundle: true,
   target: 'es2016',
   outdir: '../priv/static/assets',
