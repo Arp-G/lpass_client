@@ -1,13 +1,22 @@
 import { Action } from "redux";
+import { SIGN_IN } from '../constants/actionTypes';
 
-interface MainState {
-
+export interface State {
+  token: string | null
 }
 
-const initialState: MainState = {};
+interface ActionWithPayload<T> extends Action {
+  payload: T;
+}
 
-const mainReducer = (state = initialState, action: Action) => {
+const initialState: State = { token: null };
+
+const mainReducer = (state = initialState, action: ActionWithPayload<any>) => {
   switch (action.type) {
+
+    case SIGN_IN:
+      return { ...state, token: action.payload }
+
     default:
       return state;
   }

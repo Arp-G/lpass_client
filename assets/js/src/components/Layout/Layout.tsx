@@ -12,7 +12,7 @@ const Layout: FC<Props> = ({ children }) => {
   // const { alertType, msg } = useSelector(state => state.settings.alert);
 
   return (
-    <div>
+    <div className="w-screen h-screen">
       <Navbar />
       {children}
     </div>

@@ -4,8 +4,8 @@ defmodule LpassClientWeb.AuthController do
 
   action_fallback LpassClientWeb.FallbackController
 
-  def sign_in(conn, ~m{username, password}) do
-    case LpassClient.Auth.token_sign_in(username, password) do
+  def sign_in(conn, ~m{lpassUsername, serverPassword, lpassPassword}) do
+    case LpassClient.Auth.sign_in(lpassUsername, serverPassword, lpassPassword) do
       {:ok, token} ->
         render(conn, "token.json", token: token)
 
@@ -16,21 +16,8 @@ defmodule LpassClientWeb.AuthController do
     end
   end
 
-  def lpass_sign_in(conn, ~m{username, password}) do
-    with {:ok, true} <- LpassClient.Api.login(username, password) do
-      json(conn, %{message: "Successfully logged in as #{username}"})
-    end
-  end
-
   def sign_out(conn, _params) do
-    case LpassClient.Api.logout() do
-      {:ok, true} ->
-        json(conn, %{message: "Successfully logged out"})
-
-      _ ->
-        conn
-        |> put_status(422)
-        |> json(%{error: "Failed"})
-    end
+    LpassClient.Api.logout()
+    json(conn, %{message: "Successfully logged out"})
   end
 end

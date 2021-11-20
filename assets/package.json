@@ -8,6 +8,7 @@
     "@types/react-router-dom": "^5.3.2",
     "axios": "^0.24.0",
     "connected-react-router": "^6.9.1",
+    "idb-keyval": "^6.0.3",
     "phoenix": "file:../deps/phoenix",
     "phoenix_html": "file:../deps/phoenix_html",
     "phoenix_live_view": "file:../deps/phoenix_live_view",
