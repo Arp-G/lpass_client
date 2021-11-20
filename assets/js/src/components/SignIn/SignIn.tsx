@@ -1,24 +1,23 @@
 import React, { FC, useState, useEffect, SyntheticEvent } from 'react';
-import { useDispatch } from 'react-redux';
+import useAppDispatch from '../../hooks/useAppDispatch';
 import { useHistory } from "react-router-dom";
 import { MdSecurity } from 'react-icons/md';
 import { usePersistedState } from '../../hooks/usePersistedState';
 import Api from '../../api/api';
-import { SIGN_IN } from '../../constants/actionTypes';
+import { SET_ALERT, SIGN_IN } from '../../constants/actionTypes';
 
 interface Props {
   // any props that come into the component
 }
 
 const SignIn: FC<Props> = () => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const history = useHistory();
 
   const [lpassUsername, changeLpassUsername] = useState<string>('');
   const [serverPassword, changeServerPassword] = useState<string>('');
   const [lpassPassword, changeLpassPassword] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<boolean>(false);
 
   // Custom hook to fetch and save auth token to indexDB
   const [token, setToken] = usePersistedState<string | undefined>('token', undefined);
@@ -30,15 +29,6 @@ const SignIn: FC<Props> = () => {
   useEffect(() => {
     if (token) history.push('/home');
   }, [token]);
-
-  useEffect(() => {
-    let timer: ReturnType<typeof setTimeout>;
-    if (error) {
-      timer = setTimeout(() => setError(false), 5000);
-    }
-
-    return () => clearTimeout(timer);
-  }, [error]);
 
   const onSubmit = async (event: SyntheticEvent) => {
     event.preventDefault();
@@ -54,9 +44,15 @@ const SignIn: FC<Props> = () => {
 
       // Persist token in indexDB
       setToken(response.data);
+      dispatch({
+        type: SET_ALERT,
+        payload: { message: 'Success!', type: 'SUCCESS', timeout: 3000 }
+      });
     } catch (err) {
-      console.log(err);
-      setError(true);
+      dispatch({
+        type: SET_ALERT,
+        payload: { message: 'Incorrect credentails, please try again!', type: 'WARNING' }
+      });
     } finally {
       setLoading(false);
     }
@@ -123,13 +119,6 @@ const SignIn: FC<Props> = () => {
           }
         </section>
       </form>
-      <div
-        className={`my-3 text-sm text-left text-white bg-yellow-500 h-12 flex items-center
-         mt-24 p-4 rounded-md transition-opacity duration-500  ${error ? 'opacity-100' : 'opacity-0'}`}
-        role="alert"
-      >
-        Incorrect credentails, please try again!
-      </div>
     </div>
   );
 };

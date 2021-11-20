@@ -10,7 +10,10 @@ const middlewares = [routerMiddleware(history)];
 
 if (devMode) middlewares.push(logger);
 
-export default () => {
-  const store = createStore(createRootReducer(history), compose(applyMiddleware(...middlewares)));
-  return store;
-};
+const rootReducer = createRootReducer(history);
+export const store = createStore(rootReducer, compose(applyMiddleware(...middlewares)));
+
+// Infer the `RootState` and `AppDispatch` types from the store itself
+export type RootState = ReturnType<typeof store.getState>
+// Inferred type: {main: MainState}
+export type AppDispatch = typeof store.dispatch
