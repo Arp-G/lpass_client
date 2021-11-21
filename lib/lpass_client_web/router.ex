@@ -18,12 +18,6 @@ defmodule LpassClientWeb.Router do
     plug LpassClientWeb.TokenAuth
   end
 
-  scope "/", LpassClientWeb do
-    pipe_through :browser
-
-    get "/", AppController, :index
-  end
-
   scope "/api", LpassClientWeb do
     pipe_through [:api]
 
@@ -38,11 +32,6 @@ defmodule LpassClientWeb.Router do
     post "/export", CredentailsController, :export
   end
 
-  # Other scopes may use custom stacks.
-  # scope "/api", LpassClientWeb do
-  #   pipe_through :api
-  # end
-
   # Enables the Swoosh mailbox preview in development.
   #
   # Note that preview only shows emails that were sent by the same
@@ -53,5 +42,13 @@ defmodule LpassClientWeb.Router do
 
       forward "/mailbox", Plug.Swoosh.MailboxPreview
     end
+  end
+
+  # Browser routes
+  scope "/", LpassClientWeb do
+    pipe_through :browser
+
+    # Catch all route, just renders react app actual routing is handled by the react router
+    get "/*path", AppController, :index
   end
 end

@@ -27,7 +27,7 @@ const SignIn: FC<Props> = () => {
 
   // Once the token is available navigate to home
   useEffect(() => {
-    if (token) history.push('/home');
+    if (token) history.push('/');
   }, [token]);
 
   const onSubmit = async (event: SyntheticEvent) => {
@@ -36,6 +36,11 @@ const SignIn: FC<Props> = () => {
       setLoading(true);
       const response = await Api.post('/sign_in', { lpassUsername, serverPassword, lpassPassword });
 
+      dispatch({
+        type: SET_ALERT,
+        payload: { message: 'Sign in success!', type: 'SUCCESS', timeout: 3000 }
+      });
+
       // Save token in store
       dispatch({
         type: SIGN_IN,
@@ -43,11 +48,7 @@ const SignIn: FC<Props> = () => {
       });
 
       // Persist token in indexDB
-      setToken(response.data);
-      dispatch({
-        type: SET_ALERT,
-        payload: { message: 'Success!', type: 'SUCCESS', timeout: 3000 }
-      });
+      setToken(response.data.token);
     } catch (err) {
       dispatch({
         type: SET_ALERT,

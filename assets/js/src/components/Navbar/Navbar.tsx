@@ -17,15 +17,19 @@ const Navbar: FC = () => {
 
   const logOut = async () => {
     try {
-      // TODO: Need to send token in this request
       await Api.post('/sign_out');
+
+      // Remove token from store
       dispatch({ type: SIGN_OUT });
+
+      // Remove token from idexDB
       setToken(undefined);
+
       dispatch({
         type: SET_ALERT,
         payload: { message: 'Logged out successfully!', type: 'SUCCESS', timeout: 3000 }
       });
-      history.push('/');
+
     } catch (err) {
       console.log(err);
       dispatch({
@@ -34,7 +38,7 @@ const Navbar: FC = () => {
       });
     }
   };
-  console.log(token);
+
   return (
     <div className="flex w-screen h-16 bg-red-600 font-semibold text-3xl justify-center items-center">
       <div className="m-auto"> Lastpass </div>
