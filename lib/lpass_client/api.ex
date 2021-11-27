@@ -113,12 +113,13 @@ defmodule LpassClient.Api do
                          last_modified_gmt,
                          last_touch
                        ] ->
-          ~M{%Credential 
-              id, name, url, username, password, group, note, 
-              last_modified_gmt: parsed_timestamp(last_modified_gmt), 
+          ~M{%Credential
+              id, name, url, username, password, group, note,
+              last_modified_gmt: parsed_timestamp(last_modified_gmt),
               last_touch: parsed_timestamp(last_touch)
             }
         end)
+        |> fetch_favicons()
 
       {:ok, data}
     end)
@@ -154,9 +155,9 @@ defmodule LpassClient.Api do
          [
            ~m{id, name, url, username, password, group, note, last_modified_gmt, last_touch}
          ]} ->
-          {:ok, ~M{%Credential 
-              id, name, url, username, password, group, note, 
-              last_modified_gmt: parsed_timestamp(last_modified_gmt), 
+          {:ok, ~M{%Credential
+              id, name, url, username, password, group, note,
+              last_modified_gmt: parsed_timestamp(last_modified_gmt),
               last_touch: parsed_timestamp(last_touch)
             }}
 
@@ -244,5 +245,54 @@ defmodule LpassClient.Api do
         {:error, _} -> nil
       end
     end
+  end
+
+  defp fetch_favicons(credentails) do
+    favi_icons =
+      credentails
+      |> Enum.map(fn ~M{%Credential url} ->
+        Task.async(fn ->
+          case HTTPoison.get("https://www.google.com/s2/favicons?sz=128&domain_url=#{url}") do
+            {:ok, response} ->
+              body = Map.get(response, :body)
+
+              cond do
+                is_nil(body) ->
+                  nil
+
+                body
+                |> String.slice(0..3)
+                |> String.downcase()
+                |> String.trim()
+                |> String.starts_with?(["<!", "ht", "<ht"]) ->
+                  nil
+
+                true ->
+                  Base.encode64(body)
+              end
+
+            _ ->
+              nil
+          end
+        end)
+      end)
+      |> Task.yield_many(10_000)
+      |> Enum.map(fn
+        {_task, {:ok, resp}} ->
+          resp
+
+        # Task died
+        {_task, {:exit, _reason}} ->
+          nil
+
+        {task, nil} ->
+          # Running past the timeout
+          Task.shutdown(task, :brutal_kill)
+          nil
+      end)
+
+    Enum.zip_with(credentails, favi_icons, fn credentail, favicon ->
+      %{credentail | favicon: favicon}
+    end)
   end
 end

@@ -9,9 +9,9 @@ defmodule LpassClientWeb.CredentailsView do
 
   def render("show.json", %{
         resp:
-          ~M{%Credential id, name, url, username, password, group, note, last_modified_gmt, last_touch}
+          ~M{%Credential id, name, url, favicon, username, password, group, note, last_modified_gmt, last_touch}
       }) do
-    %{data: ~M{id, name, url, username, password, group, note, last_modified_gmt, last_touch}}
+    %{data: ~M{id, name, url, favicon, username, password, group, note, last_modified_gmt, last_touch}}
   end
 
   def render("export.json", ~M{resp}) do
@@ -19,8 +19,8 @@ defmodule LpassClientWeb.CredentailsView do
       data:
         Enum.map(
           resp,
-          fn ~M{%Credential id, name, url, username, password, group, note, last_modified_gmt, last_touch} ->
-            ~M{id, name, url, username, password, group, note, last_modified_gmt, last_touch}
+          fn ~M{%Credential id, name, url, favicon, username, password, group, note, last_modified_gmt, last_touch} ->
+            ~M{id, name, url, favicon, username, password, group, note, last_modified_gmt, last_touch}
           end
         )
     }

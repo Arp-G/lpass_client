@@ -47,7 +47,8 @@ defmodule LpassClient.MixProject do
       {:credo, "~> 1.5"},
       {:dialyxir, "~> 0.5.0", only: [:dev], runtime: false},
       {:shorter_maps, "~> 2.0"},
-      {:nimble_csv, "~> 1.1"}
+      {:nimble_csv, "~> 1.1"},
+      {:httpoison, "~> 1.8"}
     ]
   end
 
@@ -61,7 +62,7 @@ defmodule LpassClient.MixProject do
     [
       setup: ["deps.get", "cmd --cd assets npm install"],
       "assets.deploy": [
-        # Use tailwind cli to build css ouput at "priv/static/assets/app.css" 
+        # Use tailwind cli to build css ouput at "priv/static/assets/app.css"
         "cmd --cd assets npm run deploy",
         # (Uses --postcss flag with tailwind cli which allows us to add extra postcss plugins via the postcss.config.js)
         # Invokes a custom build script for ESBuild to build js
