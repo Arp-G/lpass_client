@@ -1,4 +1,5 @@
 import { createStore, applyMiddleware, compose } from 'redux';
+import { enableBatching } from 'redux-batched-actions';
 import logger from 'redux-logger';
 import { routerMiddleware } from 'connected-react-router';
 import { createBrowserHistory } from 'history';
@@ -11,7 +12,7 @@ const middlewares = [routerMiddleware(history)];
 if (devMode) middlewares.push(logger);
 
 const rootReducer = createRootReducer(history);
-export const store = createStore(rootReducer, compose(applyMiddleware(...middlewares)));
+export const store = createStore(enableBatching(rootReducer), compose(applyMiddleware(...middlewares)));
 
 // Infer the `RootState` and `AppDispatch` types from the store itself
 export type RootState = ReturnType<typeof store.getState>

@@ -3,6 +3,7 @@ import useAppDispatch from '../../hooks/useAppDispatch';
 import { useHistory } from "react-router-dom";
 import { MdSecurity } from 'react-icons/md';
 import { usePersistedState } from '../../hooks/usePersistedState';
+import Loader from '../Loader/Loader';
 import Api from '../../api/api';
 import { SET_ALERT, SIGN_IN } from '../../constants/actionTypes';
 
@@ -105,11 +106,7 @@ const SignIn: FC<Props> = () => {
         </section>
         <section>
           {loading ?
-            <div className="flex mt-2 items-center justify-center space-x-2 animate-bounce">
-              <div className="w-2 h-2 bg-red-600 rounded-full"></div>
-              <div className="w-2 h-2 bg-green-600 rounded-full"></div>
-              <div className="w-2 h-2 bg-blue-600 rounded-full"></div>
-            </div>
+            <Loader />
             : <input
               type="submit"
               value="Sign In"

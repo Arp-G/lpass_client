@@ -23,7 +23,7 @@ const Layout: FC<Props> = ({ children }) => {
   }, [alert]);
 
   return (
-    <div className="w-screen h-screen">
+    <div>
       <Navbar />
       {children}
       <Alert {...alert} />
