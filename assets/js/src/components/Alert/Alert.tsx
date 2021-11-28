@@ -1,8 +1,8 @@
 import React, { FC } from 'react';
-import { AlertType } from '../../Types/Types';
+import { MessageType } from '../../Types/Types';
 
 interface Props {
-  type: AlertType,
+  type: MessageType,
   message: string
 }
 
@@ -49,7 +49,8 @@ const Alert: FC<Props> = (alert) => {
       shadow-md
       dark:bg-gray-800
       transition-opacity duration-700
-      fixed bottom-6 max-w-64 left-1/2 -translate-x-1/2
+      fixed bottom-6 max-w-64 left-1/2 -translate-x-1/2 
+      z-50
       ${alert?.type ? 'opacity-80' : 'opacity-0'}`}
     >
       <div className={`flex items-center justify-center w-12 bg-${ALERT_COLORS[alert?.type]}`}> {ALERT_SVGS[alert?.type]}  </div>

@@ -1,31 +1,24 @@
-import React, { useState, useEffect, FC } from 'react';
+import React, { useState, FC } from 'react';
 import { RiAddCircleFill } from 'react-icons/ri';
+import { HiSortDescending } from 'react-icons/hi';
 import useAppSelector from '../../hooks/useAppSelector';
-import PasswordModal from '../PasswordModal/PasswordModal';
 import CredentialItem from '../CredentialItem/CredentialItem';
-import { CredentialsHash } from '../../Types/Types';
+import SortModal from '../SortModal/SortModal';
+import { SortOrder, CredentialsHash } from '../../Types/Types';
 
 interface Props {
   // any props that come into the component
 }
 
 const Home: FC<Props> = () => {
-  const allCredentails: CredentialsHash = useAppSelector(state => state.main.allCredentails)
-  const [modalOpen, setModal] = useState<boolean>(false);
+  const allCredentials: CredentialsHash = useAppSelector(state => state.main.allCredentials)
   const [searchString, setSearchString] = useState<string>('');
-
-  useEffect(() => {
-    if (Object.keys(allCredentails).length === 0) {
-      setModal(true);
-    } else {
-      setModal(false);
-    }
-  }, [allCredentails]);
+  const [sortModal, setSortModal] = useState(false);
+  const [sortOrder, setSortOrder] = useState<SortOrder>('A-Z');
 
   return (
     <div className="h-full">
-      {modalOpen && <PasswordModal />}
-      <div className="border-2 flex justify-center bg-gray-200 sticky top-16">
+      <div className="border-2 flex justify-between bg-gray-200 sticky top-16 w-screen">
         <input
           type="text"
           name="name"
@@ -34,20 +27,36 @@ const Home: FC<Props> = () => {
           onChange={(event) => setSearchString(event.target.value)}
           value={searchString}
         />
+        <HiSortDescending
+          className="text-3xl self-center mr-1.5 cursor-pointer"
+          onClick={() => setSortModal(true)}
+        />
       </div>
+      {sortModal &&
+        <SortModal
+          setSortModal={setSortModal}
+          setSortOrder={setSortOrder}
+          sortOrder={sortOrder}
+        />}
       {<ul>
         {
-          Object.values(allCredentails)
+          Object.values(allCredentials)
             .filter(cred => {
               const searchStr = searchString.toLowerCase()
               return cred?.name?.toLowerCase()?.includes(searchStr) ||
                 cred?.username?.toLowerCase()?.includes(searchStr) ||
                 cred?.url?.toLowerCase()?.includes(searchStr);
             })
+            .sort((cred1, cred2) => {
+              if (sortOrder === 'TIME' && cred1.last_touch && cred2.last_touch)
+                return new Date(cred1.last_touch).getTime() - new Date(cred2.last_touch).getTime();
+              else
+                return cred1.name.localeCompare(cred2.name);
+            })
             .map(({ id, name }) =>
               <CredentialItem
                 key={id}
-                data={{ ...allCredentails[id], id, name }}
+                data={{ ...allCredentials[id], id, name }}
               />)
         }
       </ul>

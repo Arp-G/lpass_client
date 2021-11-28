@@ -1,10 +1,11 @@
 import React, { useState, SyntheticEvent, FC } from 'react';
 import { batchActions } from 'redux-batched-actions';
 import { FcLock } from 'react-icons/fc';
+import { AiOutlineCloseCircle } from 'react-icons/ai'
 import Loader from '../Loader/Loader';
 import useAppDispatch from '../../hooks/useAppDispatch';
 import Api from '../../api/api';
-import { SYNC_ALL_CREDENTIALS, SET_ALERT } from '../../constants/actionTypes';
+import { SYNC_ALL_CREDENTIALS, SET_SYNC_MODAL, SET_ALERT } from '../../constants/actionTypes';
 import { usePersistedState } from '../../hooks/usePersistedState';
 
 interface Props { }
@@ -13,20 +14,22 @@ const PasswordModal: FC<Props> = () => {
   const [password, setPassword] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
   const dispatch = useAppDispatch();
-  const [_allCrendentails, setAllCredentails] = usePersistedState<Credential[] | undefined>('allCredentails', undefined);
+  const [_allCrendentails, setAllCredentials] = usePersistedState<Credential[] | undefined>('allCredentials', undefined);
 
-  const fetchAllCredentails = (event: SyntheticEvent) => {
+  const fetchAllCredentials = (event: SyntheticEvent) => {
     event.preventDefault();
     setLoading(true);
     Api.post('/export', { password })
       .then(response => {
         // Save in index db
-        setAllCredentails(response.data.data);
+        setAllCredentials(response.data.data);
 
         dispatch(batchActions([{
           type: SYNC_ALL_CREDENTIALS,
           payload: response.data.data
-        }, {
+        },
+        { type: SET_SYNC_MODAL, payload: false },
+        {
           type: SET_ALERT,
           payload: { message: 'Success!', type: 'SUCCESS' }
         }]));
@@ -44,14 +47,19 @@ const PasswordModal: FC<Props> = () => {
   return (
     <div className="modal fixed w-full h-full top-0 left-0 flex items-center justify-center">
       <div className="modal-overlay absolute w-full h-full bg-gray-900 opacity-50"></div>
-      <div className="modal-container bg-white w-11/12 md:max-w-md mx-auto rounded shadow-lg z-50 overflow-y-auto">
-        <div className="modal-content m-2 flex flex-col justify-center items-center border-2 p-2
-        ">
+      <div className="modal-container border-4 bg-white w-11/12 md:max-w-md mx-auto rounded shadow-lg z-50 overflow-y-auto">
+        <div className="flex flex-row">
+          <AiOutlineCloseCircle
+            className=" text-2xl mt-1 mr-1 ml-auto cursor-pointer"
+            onClick={() => dispatch({ type: SET_SYNC_MODAL, payload: false })}
+          />
+        </div>
+        <div className="modal-content flex flex-col justify-center items-center p-2">
           <FcLock className="text-5xl" />
-          <div className="text-lg font-semibold">
-            Re-enter you last pass password below
+          <div className="text-md font-semibold italic text-center">
+            Enter you lastpass master password below to synchronise credentials
           </div>
-          <form onSubmit={fetchAllCredentails}>
+          <form onSubmit={fetchAllCredentials}>
             <section>
               <input
                 className="p-1 pl-2 rounded-full italic mt-4 mb-4 font-bold 

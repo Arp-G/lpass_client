@@ -18,8 +18,8 @@ const LpassApp = () => {
 
   // On App load find and load persisted state in store
   useEffect(() => {
-    getMany(['token', 'allCredentails'])
-      .then(([token, allCredentails]) => {
+    getMany(['token', 'allCredentials'])
+      .then(([token, allCredentials]) => {
         const actions = [];
 
         actions.push({
@@ -27,10 +27,10 @@ const LpassApp = () => {
           payload: token || null
         })
 
-        if (allCredentails)
+        if (allCredentials)
           actions.push({
             type: SYNC_ALL_CREDENTIALS,
-            payload: allCredentails
+            payload: allCredentials
           })
 
         if (actions.length > 0) dispatch(batchActions(actions));
