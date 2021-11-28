@@ -11,7 +11,7 @@ interface Props {
 
 const Home: FC<Props> = () => {
   const allCredentails: CredentialsHash = useAppSelector(state => state.main.allCredentails)
-  const [modalOpen, setModal] = useState<boolean>(true);
+  const [modalOpen, setModal] = useState<boolean>(false);
   const [searchString, setSearchString] = useState<string>('');
 
   useEffect(() => {

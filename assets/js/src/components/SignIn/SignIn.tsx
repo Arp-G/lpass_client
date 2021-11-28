@@ -1,4 +1,5 @@
 import React, { FC, useState, useEffect, SyntheticEvent } from 'react';
+import { batchActions } from 'redux-batched-actions';
 import useAppDispatch from '../../hooks/useAppDispatch';
 import { useHistory } from "react-router-dom";
 import { MdSecurity } from 'react-icons/md';
@@ -37,16 +38,16 @@ const SignIn: FC<Props> = () => {
       setLoading(true);
       const response = await Api.post('/sign_in', { lpassUsername, serverPassword, lpassPassword });
 
-      dispatch({
-        type: SET_ALERT,
-        payload: { message: 'Sign in success!', type: 'SUCCESS', timeout: 3000 }
-      });
-
-      // Save token in store
-      dispatch({
-        type: SIGN_IN,
-        payload: response.data.token
-      });
+      dispatch(batchActions([
+        {
+          type: SIGN_IN,
+          payload: response.data.token
+        },
+        {
+          type: SET_ALERT,
+          payload: { message: 'Sign in success!', type: 'SUCCESS', timeout: 3000 }
+        }
+      ]));
 
       // Persist token in indexDB
       setToken(response.data.token);

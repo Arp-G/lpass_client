@@ -1,9 +1,9 @@
 import React, { FC } from 'react';
-import { useHistory } from "react-router-dom";
+import { batchActions } from 'redux-batched-actions';
 import Api from '../../api/api';
 import useAppSelector from '../../hooks/useAppSelector';
 import useAppDispatch from '../../hooks/useAppDispatch';
-import { usePersistedState } from '../../hooks/usePersistedState';
+import { delMany } from "idb-keyval";
 import { SET_ALERT, SIGN_OUT } from '../../constants/actionTypes';
 import { MdLogout } from 'react-icons/md'
 
@@ -11,24 +11,18 @@ const Navbar: FC = () => {
 
   const token: string = useAppSelector(state => state.main.token);
   const dispatch = useAppDispatch();
-  const history = useHistory();
-  // Custom hook to fetch and save auth token to indexDB
-  const [_token, setToken] = usePersistedState<string | undefined>('token', undefined);
 
   const logOut = async () => {
     try {
       await Api.post('/sign_out');
 
-      // Remove token from store
-      dispatch({ type: SIGN_OUT });
-
       // Remove token from idexDB
-      setToken(undefined);
+      await delMany(['token', 'allCredentails']);
 
-      dispatch({
-        type: SET_ALERT,
-        payload: { message: 'Logged out successfully!', type: 'SUCCESS', timeout: 3000 }
-      });
+      dispatch(batchActions([
+        { type: SIGN_OUT },
+        { type: SET_ALERT, payload: { message: 'Logged out successfully!', type: 'SUCCESS', timeout: 3000 } }
+      ]));
 
     } catch (err) {
       console.log(err);

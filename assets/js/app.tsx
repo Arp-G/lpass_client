@@ -1,27 +1,44 @@
 import React, { useEffect } from 'react';
+import { batchActions } from 'redux-batched-actions';
 import { Route, Switch } from 'react-router-dom';
 import Layout from './src/components/Layout/Layout';
 import ProtectedRoute from './ProtectedRoute';
 import SignIn from './src/components/SignIn/SignIn';
 import Home from './src/components/Home/Home';
-import { usePersistedState } from './src/hooks/usePersistedState';
+import { getMany } from "idb-keyval";
 import useAppDispatch from './src/hooks/useAppDispatch';
-import { SIGN_IN } from './src/constants/actionTypes';
+import { SYNC_ALL_CREDENTIALS, SIGN_IN } from './src/constants/actionTypes';
+import useAppSelector from './src/hooks/useAppSelector';
 
 const LpassApp = () => {
   const dispatch = useAppDispatch();
-  const [token, _setToken] = usePersistedState<string | undefined>('token', undefined);
 
-  // On App load find and load token in store
+  // Serves as a check, used to display loading until persisted state is loaded into store.
+  const tokenLoaded = useAppSelector(state => state.main.token);
+
+  // On App load find and load persisted state in store
   useEffect(() => {
-    // Save token in store
-    if(token) {
-      dispatch({
-        type: SIGN_IN,
-        payload: token
-      });
-    }
-  }, [token]);
+    getMany(['token', 'allCredentails'])
+      .then(([token, allCredentails]) => {
+        const actions = [];
+
+        actions.push({
+          type: SIGN_IN,
+          payload: token || null
+        })
+
+        if (allCredentails)
+          actions.push({
+            type: SYNC_ALL_CREDENTIALS,
+            payload: allCredentails
+          })
+
+        if (actions.length > 0) dispatch(batchActions(actions));
+      })
+  }, []);
+
+  if (tokenLoaded === undefined)
+    return <div>Loading...</div>
 
   return (
     <Layout>

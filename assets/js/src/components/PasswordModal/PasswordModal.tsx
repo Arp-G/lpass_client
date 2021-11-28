@@ -5,6 +5,7 @@ import Loader from '../Loader/Loader';
 import useAppDispatch from '../../hooks/useAppDispatch';
 import Api from '../../api/api';
 import { SYNC_ALL_CREDENTIALS, SET_ALERT } from '../../constants/actionTypes';
+import { usePersistedState } from '../../hooks/usePersistedState';
 
 interface Props { }
 
@@ -12,12 +13,16 @@ const PasswordModal: FC<Props> = () => {
   const [password, setPassword] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
   const dispatch = useAppDispatch();
+  const [_allCrendentails, setAllCredentails] = usePersistedState<Credential[] | undefined>('allCredentails', undefined);
 
   const fetchAllCredentails = (event: SyntheticEvent) => {
     event.preventDefault();
     setLoading(true);
     Api.post('/export', { password })
       .then(response => {
+        // Save in index db
+        setAllCredentails(response.data.data);
+
         dispatch(batchActions([{
           type: SYNC_ALL_CREDENTIALS,
           payload: response.data.data
@@ -31,7 +36,9 @@ const PasswordModal: FC<Props> = () => {
           type: SET_ALERT,
           payload: { message: 'Failed, try again!', type: 'ERROR' }
         })
-      }).finally(() => setLoading(false))
+
+        setLoading(false);
+      });
   }
 
   return (
