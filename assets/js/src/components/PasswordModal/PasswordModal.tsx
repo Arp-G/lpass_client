@@ -47,12 +47,14 @@ const PasswordModal: FC<Props> = () => {
   return (
     <div className="modal fixed w-full h-full top-0 left-0 flex items-center justify-center">
       <div className="modal-overlay absolute w-full h-full bg-gray-900 opacity-50"></div>
-      <div className="modal-container border-4 bg-white w-11/12 md:max-w-md mx-auto rounded shadow-lg z-50 overflow-y-auto">
-        <div className="flex flex-row">
-          <AiOutlineCloseCircle
-            className=" text-2xl mt-1 mr-1 ml-auto cursor-pointer"
-            onClick={() => dispatch({ type: SET_SYNC_MODAL, payload: false })}
-          />
+      <div className="modal-container border-4 bg-white w-11/12 h-64 md:max-w-md mx-auto rounded shadow-lg z-50 overflow-y-auto">
+        <div className="flex flex-row h-4">
+          {
+            !loading && <AiOutlineCloseCircle
+              className=" text-2xl mt-1 mr-1 ml-auto cursor-pointer"
+              onClick={() => dispatch({ type: SET_SYNC_MODAL, payload: false })}
+            />
+          }
         </div>
         <div className="modal-content flex flex-col justify-center items-center p-2">
           <FcLock className="text-5xl" />
