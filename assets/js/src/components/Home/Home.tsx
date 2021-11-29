@@ -3,7 +3,7 @@ import { useHistory } from 'react-router';
 import { RiAddCircleFill } from 'react-icons/ri';
 import { HiSortDescending } from 'react-icons/hi';
 import { BiSync } from 'react-icons/bi';
-import { FaRegPaperPlane } from 'react-icons/fa';
+import { RiLockPasswordLine } from 'react-icons/ri';
 import useAppSelector from '../../hooks/useAppSelector';
 import useAppDispatch from '../../hooks/useAppDispatch';
 import CredentialItem from '../CredentialItem/CredentialItem';
@@ -29,18 +29,18 @@ const Home: FC<Props> = () => {
   }, [allCredentials])
 
   return (
-    <div>
+    <div className="w-screen">
       <div className="border-2 flex justify-between bg-gray-200 sticky top-16 w-screen">
         <input
           type="text"
           name="name"
           placeholder="Search..."
-          className="m-2 p-2 w-11/12 rounded-full italic focus:outline-none ring-2 focus:ring-red-500"
+          className="m-4 p-2 w-11/12 rounded-full italic focus:outline-none ring-2 focus:ring-red-500"
           onChange={(event) => setSearchString(event.target.value)}
           value={searchString}
         />
         <HiSortDescending
-          className="text-3xl self-center mr-1.5 cursor-pointer"
+          className="text-3xl self-center mr-5 cursor-pointer"
           onClick={() => setSortModal(true)}
         />
       </div>
@@ -52,15 +52,15 @@ const Home: FC<Props> = () => {
         />}
       {Object.keys(allCredentials).length === 0
         ?
-        <div className="h-96 flex flex-col justify-center items-center">
+        <div className="h-96 mt-16 flex flex-col justify-center items-center w-screen">
           <div className="text-center text-lg font-semibold italic">
-            No credentials found, click on <BiSync className="text-2xl font-bold text-center inline" /> to sync with server.
+            No credentials found, click on <BiSync className="text-2xl font-bold text-center inline text-red-600" /> to sync with server.
           </div>
           <div>
-            <FaRegPaperPlane className="text-6xl text-red-500" />
+            <RiLockPasswordLine className="text-6xl text-red-500 mt-4" />
           </div>
         </div>
-        : <ul>
+        : <ul className="w-11/12 m-auto">
           {
             Object.values(allCredentials)
               .filter(cred => {
@@ -84,7 +84,7 @@ const Home: FC<Props> = () => {
         </ul>
       }
       <RiAddCircleFill
-        className="fixed bottom-6 right-3 text-6xl text-red-600 z-10"
+        className="fixed bottom-6 right-3 text-6xl text-red-600 z-10 cursor-pointer"
         onClick={() => history.push("/credentials/123")}
       />
     </div>

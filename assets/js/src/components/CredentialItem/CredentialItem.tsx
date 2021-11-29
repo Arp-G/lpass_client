@@ -8,7 +8,7 @@ interface Props {
 
 const CredentailItem: FC<Props> = ({ data }) => {
   return (
-    <li key={data.id} className="flex m-4 pb-2 space-x-6 border-b-2">
+    <li key={data.id} className="flex mt-4 pb-2 space-x-6 border-b-2">
       <div>
         {
           data.favicon
