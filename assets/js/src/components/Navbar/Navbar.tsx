@@ -38,8 +38,8 @@ const Navbar: FC = () => {
       <div className="m-auto"> Lastpass </div>
       {
         token &&
-        <div className="pr-2 cursor-pointer"> <
-          BiSync onClick={() => dispatch({ type: SET_SYNC_MODAL, payload: true })} />
+        <div className="pr-2 cursor-pointer">
+          <BiSync onClick={() => dispatch({ type: SET_SYNC_MODAL, payload: true })} />
         </div>
       }
       {

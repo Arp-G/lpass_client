@@ -1,9 +1,12 @@
-import React, { useState, FC } from 'react';
+import React, { useState, useEffect, FC } from 'react';
 import { RiAddCircleFill } from 'react-icons/ri';
 import { HiSortDescending } from 'react-icons/hi';
+import { BiSync } from 'react-icons/bi';
 import useAppSelector from '../../hooks/useAppSelector';
+import useAppDispatch from '../../hooks/useAppDispatch';
 import CredentialItem from '../CredentialItem/CredentialItem';
 import SortModal from '../SortModal/SortModal';
+import { SET_SYNC_MODAL } from '../../constants/actionTypes';
 import { SortOrder, CredentialsHash } from '../../Types/Types';
 
 interface Props {
@@ -11,13 +14,19 @@ interface Props {
 }
 
 const Home: FC<Props> = () => {
-  const allCredentials: CredentialsHash = useAppSelector(state => state.main.allCredentials)
+  const allCredentials: CredentialsHash = useAppSelector(state => state.main.allCredentials);
+  const dispatch = useAppDispatch();
   const [searchString, setSearchString] = useState<string>('');
-  const [sortModal, setSortModal] = useState(false);
+  const [sortModal, setSortModal] = useState<boolean>(false);
   const [sortOrder, setSortOrder] = useState<SortOrder>('A-Z');
 
+  useEffect(() => {
+    if (Object.keys(allCredentials).length === 0)
+      dispatch({ type: SET_SYNC_MODAL, payload: true });
+  }, [allCredentials])
+
   return (
-    <div className="h-full">
+    <div>
       <div className="border-2 flex justify-between bg-gray-200 sticky top-16 w-screen">
         <input
           type="text"
@@ -38,28 +47,35 @@ const Home: FC<Props> = () => {
           setSortOrder={setSortOrder}
           sortOrder={sortOrder}
         />}
-      {<ul>
-        {
-          Object.values(allCredentials)
-            .filter(cred => {
-              const searchStr = searchString.toLowerCase()
-              return cred?.name?.toLowerCase()?.includes(searchStr) ||
-                cred?.username?.toLowerCase()?.includes(searchStr) ||
-                cred?.url?.toLowerCase()?.includes(searchStr);
-            })
-            .sort((cred1, cred2) => {
-              if (sortOrder === 'TIME' && cred1.last_touch && cred2.last_touch)
-                return new Date(cred1.last_touch).getTime() - new Date(cred2.last_touch).getTime();
-              else
-                return cred1.name.localeCompare(cred2.name);
-            })
-            .map(({ id, name }) =>
-              <CredentialItem
-                key={id}
-                data={{ ...allCredentials[id], id, name }}
-              />)
-        }
-      </ul>
+      {Object.keys(allCredentials).length === 0
+        ?
+        <div className="h-96 flex justify-center items-center">
+          <span className="text-center text-lg font-semibold italic font-">
+            No credentials found, click on <BiSync className="text-2xl font-bold text-center inline" /> to sync with server.
+          </span>
+        </div>
+        : <ul>
+          {
+            Object.values(allCredentials)
+              .filter(cred => {
+                const searchStr = searchString.toLowerCase()
+                return cred?.name?.toLowerCase()?.includes(searchStr) ||
+                  cred?.username?.toLowerCase()?.includes(searchStr) ||
+                  cred?.url?.toLowerCase()?.includes(searchStr);
+              })
+              .sort((cred1, cred2) => {
+                if (sortOrder === 'TIME' && cred1.last_touch && cred2.last_touch)
+                  return new Date(cred1.last_touch).getTime() - new Date(cred2.last_touch).getTime();
+                else
+                  return cred1.name.localeCompare(cred2.name);
+              })
+              .map(({ id, name }) =>
+                <CredentialItem
+                  key={id}
+                  data={{ ...allCredentials[id], id, name }}
+                />)
+          }
+        </ul>
       }
       <RiAddCircleFill className="fixed bottom-6 right-3 text-6xl text-red-600 z-10" />
     </div>
