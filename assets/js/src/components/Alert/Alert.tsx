@@ -40,7 +40,7 @@ const Alert: FC<Props> = (alert) => {
   return (
     <div className={`
       flex
-      w-full
+      w-11/12
       max-w-sm
       mx-auto
       overflow-hidden
@@ -51,12 +51,12 @@ const Alert: FC<Props> = (alert) => {
       transition-opacity duration-700
       fixed bottom-6 max-w-64 left-1/2 -translate-x-1/2 
       z-50
-      ${alert?.type ? 'opacity-80' : 'opacity-0'}`}
+      ${alert?.type ? 'opacity-100' : 'opacity-0'}`}
     >
       <div className={`flex items-center justify-center w-12 bg-${ALERT_COLORS[alert?.type]}`}> {ALERT_SVGS[alert?.type]}  </div>
       <div className="px-2 py-2 -mx-3">
         <div className="mx-3">
-          <p className="text text-gray-600 dark:text-gray-200">
+          <p className="text-gray-600 dark:text-gray-200 font-semibold">
             {alert?.message}
           </p>
         </div>

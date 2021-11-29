@@ -9,6 +9,7 @@ import { getMany } from "idb-keyval";
 import useAppDispatch from './src/hooks/useAppDispatch';
 import { SYNC_ALL_CREDENTIALS, SIGN_IN } from './src/constants/actionTypes';
 import useAppSelector from './src/hooks/useAppSelector';
+import CredentailForm from './src/components/CredentailForm/CredentialForm';
 
 const LpassApp = () => {
   const dispatch = useAppDispatch();
@@ -45,6 +46,7 @@ const LpassApp = () => {
       <Switch>
         <Route exact path="/sign_in" component={SignIn} />
         <ProtectedRoute exact path="/" component={Home} />
+        <ProtectedRoute exact path="/credentials/:id" component={CredentailForm} />
       </Switch>
     </Layout>);
 };

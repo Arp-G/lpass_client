@@ -1,7 +1,9 @@
 import React, { useState, useEffect, FC } from 'react';
+import { useHistory } from 'react-router';
 import { RiAddCircleFill } from 'react-icons/ri';
 import { HiSortDescending } from 'react-icons/hi';
 import { BiSync } from 'react-icons/bi';
+import { FaRegPaperPlane } from 'react-icons/fa';
 import useAppSelector from '../../hooks/useAppSelector';
 import useAppDispatch from '../../hooks/useAppDispatch';
 import CredentialItem from '../CredentialItem/CredentialItem';
@@ -16,6 +18,7 @@ interface Props {
 const Home: FC<Props> = () => {
   const allCredentials: CredentialsHash = useAppSelector(state => state.main.allCredentials);
   const dispatch = useAppDispatch();
+  const history = useHistory();
   const [searchString, setSearchString] = useState<string>('');
   const [sortModal, setSortModal] = useState<boolean>(false);
   const [sortOrder, setSortOrder] = useState<SortOrder>('A-Z');
@@ -49,10 +52,13 @@ const Home: FC<Props> = () => {
         />}
       {Object.keys(allCredentials).length === 0
         ?
-        <div className="h-96 flex justify-center items-center">
-          <span className="text-center text-lg font-semibold italic font-">
+        <div className="h-96 flex flex-col justify-center items-center">
+          <div className="text-center text-lg font-semibold italic">
             No credentials found, click on <BiSync className="text-2xl font-bold text-center inline" /> to sync with server.
-          </span>
+          </div>
+          <div>
+            <FaRegPaperPlane className="text-6xl text-red-500" />
+          </div>
         </div>
         : <ul>
           {
@@ -77,7 +83,10 @@ const Home: FC<Props> = () => {
           }
         </ul>
       }
-      <RiAddCircleFill className="fixed bottom-6 right-3 text-6xl text-red-600 z-10" />
+      <RiAddCircleFill
+        className="fixed bottom-6 right-3 text-6xl text-red-600 z-10"
+        onClick={() => history.push("/credentials/123")}
+      />
     </div>
   );
 };
