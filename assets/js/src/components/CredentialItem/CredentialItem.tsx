@@ -1,14 +1,22 @@
 import React, { FC } from 'react';
 import { Credential } from '../../Types/Types';
 import { RiLockPasswordFill } from 'react-icons/ri';
+import { useHistory } from 'react-router';
 
 interface Props {
   data: Credential
 }
 
 const CredentailItem: FC<Props> = ({ data }) => {
+  const history = useHistory();
+  // history.push("/credentials/123")
+
   return (
-    <li key={data.id} className="flex mt-4 pb-2 space-x-6 border-b-2">
+    <li
+      key={data.id}
+      className="flex mt-4 pb-2 space-x-6 border-b-2"
+      onClick={() => history.push(`/credentials/${data.id}`)}
+    >
       <div>
         {
           data.favicon

@@ -1,35 +1,44 @@
-import React, { FC, useState, useEffect, SyntheticEvent } from 'react';
+import React, { FC, useState, SyntheticEvent } from 'react';
+import { useRouteMatch } from 'react-router-dom';
 import { batchActions } from 'redux-batched-actions';
 import useAppDispatch from '../../hooks/useAppDispatch';
+import useAppSelector from '../../hooks/useAppSelector';
 import { useHistory } from "react-router-dom";
 import { MdSecurity } from 'react-icons/md';
 import { usePersistedState } from '../../hooks/usePersistedState';
 import Loader from '../Loader/Loader';
 import Api from '../../api/api';
+import { Credential } from '../../Types/Types';
 import { SET_ALERT, SIGN_IN } from '../../constants/actionTypes';
+
 
 interface Props {
   mode: 'new' | 'edit' | 'show'
 }
 
-const CredentailForm: FC<Props> = ({ mode }) => {
-  const dispatch = useAppDispatch();
-  const history = useHistory();
+interface MatchParams {
+  id: string;
+}
 
-  const [name, changeName] = useState<string>('');
-  const [url, changeUrl] = useState<string>('');
-  const [username, changeUsername] = useState<string>('');
-  const [password, changePassword] = useState<string>('');
-  const [note, changeNote] = useState<string>('');
+const CredentailForm: FC<Props> = ({ match: { params } }: MatchParams) => {
+  const allCredentail = useAppSelector(state => state.main.allCredentials);
+  const urlParams = useRouteMatch<MatchParams>('/credentials/:id');
+  const credential = allCredentail[urlParams?.params?.id];
+
+  console.log(match);
+
+  const [name, changeName] = useState<string>(credential?.name || '');
+  const [url, changeUrl] = useState<string>(credential?.url || '');
+  const [username, changeUsername] = useState<string>(credential?.username || '');
+  const [password, changePassword] = useState<string>(credential?.password || '');
+  const [note, changeNote] = useState<string>(credential?.note || '');
   const [loading, setLoading] = useState<boolean>(false);
 
   // Disable submit button untill all fields have some value
   const valid = name.length;
 
-
   const onSubmit = async (event: SyntheticEvent) => {
     event.preventDefault();
-
   }
 
   return (
