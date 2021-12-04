@@ -216,6 +216,24 @@ defmodule LpassClient.Api do
     |> check_error(fn _ -> {:ok, true} end)
   end
 
+  @doc """
+  Check Last pass login status
+
+  ## Examples
+    # When not logged in
+    iex(3)> LpassClient.Api.logged_in?
+    {:success, false}
+
+    # When logged in
+    iex(4)> LpassClient.Api.logged_in?
+    {:success, true}
+  """
+  @spec logged_in? :: {:success, boolean} | error()
+  def logged_in?() do
+    Cli.status()
+    |> check_error(&({:ok, String.starts_with?(&1, "Logged in as")}))
+  end
+
   defp check_error(resp, parser) do
     error = String.contains?(resp, "Error:")
 
@@ -246,7 +264,6 @@ defmodule LpassClient.Api do
         {:error, _} -> nil
       end
     end
-
   rescue
     ArgumentError -> nil
   end

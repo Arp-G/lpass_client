@@ -22,7 +22,7 @@ const mainReducer = (state = initialState, action: ActionWithPayload<any>) => {
       return { ...state, token: action.payload };
 
     case SIGN_OUT:
-      return { ...state, token: null };
+      return { ...state, token: null, allCredentials: {} };
 
     case SYNC_ALL_CREDENTIALS:
       const allCredentials = action.payload.reduce((acc: CredentialsHash, credential: Credential) => {

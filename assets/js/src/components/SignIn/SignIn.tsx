@@ -29,7 +29,9 @@ const SignIn: FC<Props> = () => {
 
   // Once the token is available navigate to home
   useEffect(() => {
-    if (token) history.push('/');
+    if (token) {
+      history.push('/');
+    }
   }, [token]);
 
   const onSubmit = async (event: SyntheticEvent) => {

@@ -30,6 +30,7 @@ defmodule LpassClientWeb.Router do
     post "/sign_out", AuthController, :sign_out
     resources "/credentials", CredentailsController, except: [:new, :edit]
     post "/export", CredentailsController, :export
+    get "/login_status", CredentailsController, :status
   end
 
   # Enables the Swoosh mailbox preview in development.

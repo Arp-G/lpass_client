@@ -1,13 +1,14 @@
 import React, { useEffect } from 'react';
 import { batchActions } from 'redux-batched-actions';
 import { Route, Switch } from 'react-router-dom';
+import Api from './src/api/api';
 import Layout from './src/components/Layout/Layout';
 import ProtectedRoute from './ProtectedRoute';
 import SignIn from './src/components/SignIn/SignIn';
 import Home from './src/components/Home/Home';
-import { getMany } from "idb-keyval";
+import { getMany, delMany } from "idb-keyval";
 import useAppDispatch from './src/hooks/useAppDispatch';
-import { SYNC_ALL_CREDENTIALS, SIGN_IN } from './src/constants/actionTypes';
+import { SYNC_ALL_CREDENTIALS, SIGN_IN, SIGN_OUT } from './src/constants/actionTypes';
 import useAppSelector from './src/hooks/useAppSelector';
 import CredentailForm from './src/components/CredentailForm/CredentialForm';
 
@@ -16,25 +17,36 @@ const LpassApp = () => {
 
   // Serves as a check, used to display loading until persisted state is loaded into store.
   const tokenLoaded = useAppSelector(state => state.main.token);
+  const signOut = () => delMany(['token', 'allCredentials']).then(() => dispatch({ type: SIGN_OUT }));
 
   // On App load find and load persisted state in store
   useEffect(() => {
     getMany(['token', 'allCredentials'])
       .then(([token, allCredentials]) => {
-        const actions = [];
+        Api.get('/login_status')
+          .then(response => {
+            if (!response?.data?.logged_in) {
+              signOut();
+              return;
+            }
 
-        actions.push({
-          type: SIGN_IN,
-          payload: token || null
-        })
+            const actions = [];
 
-        if (allCredentials)
-          actions.push({
-            type: SYNC_ALL_CREDENTIALS,
-            payload: allCredentials
-          })
+            actions.push({
+              type: SIGN_IN,
+              payload: token || null
+            })
 
-        if (actions.length > 0) dispatch(batchActions(actions));
+            if (allCredentials)
+              actions.push({
+                type: SYNC_ALL_CREDENTIALS,
+                payload: allCredentials
+              })
+
+            if (actions.length > 0) dispatch(batchActions(actions));
+          }).catch(() => {
+            signOut();
+          });
       })
   }, []);
 

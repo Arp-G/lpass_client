@@ -41,4 +41,10 @@ defmodule LpassClientWeb.CredentailsController do
       render(conn, "export.json", resp: resp)
     end
   end
+
+  def status(conn, _params) do
+    with {:success, status} <- Api.logged_in?() do
+      json(conn, %{logged_in: status})
+    end
+  end
 end

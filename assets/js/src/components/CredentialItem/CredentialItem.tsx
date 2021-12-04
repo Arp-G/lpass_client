@@ -9,7 +9,6 @@ interface Props {
 
 const CredentailItem: FC<Props> = ({ data }) => {
   const history = useHistory();
-  // history.push("/credentials/123")
 
   return (
     <li
