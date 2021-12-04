@@ -12,6 +12,24 @@ import { SYNC_ALL_CREDENTIALS, SIGN_IN, SIGN_OUT } from './src/constants/actionT
 import useAppSelector from './src/hooks/useAppSelector';
 import CredentailForm from './src/components/CredentailForm/CredentialForm';
 
+
+
+
+/*
+TODO:
+
+Move all dispatch calls to be done via actions.
+Define actions in separate actions/index.js file
+Define action using "redux-actions"
+Make actions for making api calls and dispatching
+batch actions whenever possible
+
+For all authenticated API calls make sure to redirect to sign in
+in case of forbidden response.
+
+ref: https://redux.js.org/usage/reducing-boilerplate#actions
+*/
+
 const LpassApp = () => {
   const dispatch = useAppDispatch();
 
