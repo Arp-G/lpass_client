@@ -3,7 +3,7 @@ import { Route, Redirect, RouteProps } from 'react-router-dom';
 import useAppSelector from './src/hooks/useAppSelector';
 
 export type ProtectedRouteProps = {
-  component: FC
+  component: FC<any>
 } & RouteProps;
 
 export default ({ component: Component, ...rest }: ProtectedRouteProps): ReactElement<RouteProps> => {

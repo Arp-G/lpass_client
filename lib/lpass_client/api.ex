@@ -246,6 +246,9 @@ defmodule LpassClient.Api do
         {:error, _} -> nil
       end
     end
+
+  rescue
+    ArgumentError -> nil
   end
 
   defp fetch_favicons(credentails) do

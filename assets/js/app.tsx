@@ -46,6 +46,7 @@ const LpassApp = () => {
       <Switch>
         <Route exact path="/sign_in" component={SignIn} />
         <ProtectedRoute exact path="/" component={Home} />
+        <ProtectedRoute exact path="/credentials" component={CredentailForm} />
         <ProtectedRoute exact path="/credentials/:id" component={CredentailForm} />
       </Switch>
     </Layout>);

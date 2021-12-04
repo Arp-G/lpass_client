@@ -85,7 +85,7 @@ const Home: FC<Props> = () => {
       }
       <RiAddCircleFill
         className="fixed bottom-6 right-3 text-6xl text-red-600 z-10 cursor-pointer"
-        onClick={() => history.push("/credentials/123")}
+        onClick={() => history.push("/credentials")}
       />
     </div>
   );

@@ -1,5 +1,5 @@
 import { Action } from "redux";
-import { SIGN_IN, SIGN_OUT, SYNC_ALL_CREDENTIALS, SET_SYNC_MODAL, SET_ALERT, CLEAR_ALERT } from '../constants/actionTypes';
+import { SIGN_IN, SIGN_OUT, SYNC_ALL_CREDENTIALS, SET_SYNC_MODAL, SET_ALERT, CLEAR_ALERT, DELETE_CREDENTIAL } from '../constants/actionTypes';
 import { CredentialsHash, Credential, AlertType } from '../Types/Types';
 
 export interface MainState {
@@ -32,8 +32,17 @@ const mainReducer = (state = initialState, action: ActionWithPayload<any>) => {
 
       return { ...state, allCredentials }
 
+    // case ADD_CREDENTIAL:
+    //   ...state.allCredentials, {}
+
+    case DELETE_CREDENTIAL:
+      const credentials = Object.entries(state.allCredentials)
+        .filter(([id, _credentail]) => id !== action.payload);
+
+      return { ...state, allCredentials: Object.fromEntries(credentials) }
+
     case SET_SYNC_MODAL:
-      return {...state, syncModal: action.payload}
+      return { ...state, syncModal: action.payload }
 
     case SET_ALERT:
       return { ...state, alert: action.payload };
