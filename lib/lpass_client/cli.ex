@@ -6,10 +6,10 @@ defmodule LpassClient.Cli do
   @lpass "/usr/bin/lpass"
 
   @doc """
-  The login subcommand will initialize a local cache and configuration folder, then attempt to authenticate itself with the LastPass servers, 
+  The login subcommand will initialize a local cache and configuration folder, then attempt to authenticate itself with the LastPass servers,
   using the provided command line credentials or by interactively prompting (in the case of multifactor or an unprovided password).
-  The --trust option will cause subsequent logins to not require multifactor authentication. 
-  If the --plaintext-key option is specified, the decryption key will be saved to the hard disk in plaintext. 
+  The --trust option will cause subsequent logins to not require multifactor authentication.
+  If the --plaintext-key option is specified, the decryption key will be saved to the hard disk in plaintext.
   LPASS_DISABLE_PINENTRY environment variable is set to 1, passwords will be read from standard input and a prompt will be displayed on standard error.
 
   lpass login [--trust] [--plaintext-key [--force, -f]] [--color=auto|never|always] USERNAME
@@ -38,7 +38,7 @@ defmodule LpassClient.Cli do
   lpass logout [--force, -f] [--color=auto|never|always]
 
   ## Examples
-    iex(50)> LpassClient.Cli.logout                                         
+    iex(50)> LpassClient.Cli.logout
     "Log out: complete.\n"
   """
   def logout(args \\ []) do
@@ -52,7 +52,7 @@ defmodule LpassClient.Cli do
   lpass ls [--sync=auto|now|no] [--long, -l] [-m] [-u] [--color=auto|never|always] [GROUP]
 
   ## Examples
-  iex(59)> LpassClient.Cli.ls                                            
+  iex(59)> LpassClient.Cli.ls
     "2018-06-27 14:41 (none)/Netflix  [id: 123] [username: User1]\n2020-02-22 05:11 (none)/AWS [id: 456] [username: test@gmail.com]\n"
 
     iex(57)> LpassClient.Cli.ls
@@ -69,7 +69,7 @@ defmodule LpassClient.Cli do
   lpass show [--sync=auto|now|no] [--clip, -c] [--quiet, -q] [--expand-multi, -x] [--json, -j] [--all|--username|--password|--url|--notes|--field=FIELD|--id|--name|--attach=ATTACHID] [--basic-regexp, -G|--fixed-strings, -F] [--color=auto|never|always] {NAME|UNIQUEID}*
 
   ## Examples
-    iex(59)> LpassClient.Cli.show("12345")                                           
+    iex(59)> LpassClient.Cli.show("12345")
     "[\n  {\n    \"id\": \"12345\",\n    \"name\": \"instagram.com\",\n    \"fullname\": \"Social/instagram.com\",\n    \"username\": \"test@gmail.com\",\n    \"password\": \"testpass\",\n    \"last_modified_gmt\": \"1598645622\",\n    \"last_touch\": \"1606716775\",\n    \"group\": \"Social\",\n    \"url\": \"http://www.instagram.com\",\n    \"note\": \"\" \n  } \n] \n"
 
     iex(57)> LpassClient.Cli.show("12345")
@@ -135,7 +135,7 @@ defmodule LpassClient.Cli do
   lpass rm [--sync=auto|now|no] [--color=auto|never|always] {UNIQUENAME|UNIQUEID}
 
   ## Examples
-    iex(9)> LpassClient.Cli.rm("123")                                                                                            
+    iex(9)> LpassClient.Cli.rm("123")
     ""
 
     iex(10)> LpassClient.Cli.rm("123")
@@ -158,7 +158,7 @@ defmodule LpassClient.Cli do
   lpass export [--sync=auto|now|no] [--color=auto|never|always] [--fields=FIELDLIST]
 
   ## Examples
-    iex(9)> LpassClient.Cli.export("correctpass")  
+    iex(9)> LpassClient.Cli.export("correctpass")
     "id,name,url,username,password,note,group,last_modified_gmt,last_touch\r\n12345,gmail,http://gmail.com,,mypass,,,1636338918,1636304385\r\567,amazon,http://amazon.com,,amazonpass,,,1636338897,1636304386\r\n"
 
     iex(27)> LpassClient.Cli.export("incorrectpass")
@@ -167,7 +167,7 @@ defmodule LpassClient.Cli do
   def export(password, args \\ []) do
     default_args = [
       sync: "auto",
-      fields: "id,name,url,username,password,note,group,last_modified_gmt,last_touch"
+      fields: "id,name,url,username,password,extra,group,fav,last_modified_gmt,last_touch"
     ]
 
     cmd_args = build_args(default_args, args)
@@ -203,7 +203,7 @@ defmodule LpassClient.Cli do
   lpass sync [--background, -b] [--color=auto|never|always]
 
   ## Examples
-    iex(16)> LpassClient.Cli.sync                                          
+    iex(16)> LpassClient.Cli.sync
     ""
 
     iex(14)> LpassClient.Cli.sync
@@ -235,30 +235,35 @@ defmodule LpassClient.Cli do
 
     data =
       if type == :edit do
-
         group = args[:group] || args["group"]
         name = args[:name] || args["name"]
 
-        name_and_group = cond do
-          group && name -> "#{group}/#{name}"
-          group -> "#{group}/"
-          name -> "/#{name}"
-          true -> "/"
-        end
+        name_and_group =
+          cond do
+            group && name -> "#{group}/#{name}"
+            group -> "#{group}/"
+            name -> "/#{name}"
+            true -> "/"
+          end
 
         [{"Name", name_and_group} | data]
       else
         data
       end
 
-      name_or_id = if type == :add do
-                    group = args[:group] || args["group"]
-                    if group, do: "#{group}/#{name_or_id}", else: "/#{name_or_id}"
-                  else
-                    name_or_id
-                  end
+    name_or_id =
+      if type == :add do
+        group = args[:group] || args["group"]
+        if group, do: "#{group}/#{name_or_id}", else: "/#{name_or_id}"
+      else
+        name_or_id
+      end
 
-    data = if(is_nil(args[:notes]), do: data, else: data ++ [{"Notes", "\n#{args[:notes] || args["notes"]}"}])
+    data =
+      if(is_nil(args[:notes]),
+        do: data,
+        else: data ++ [{"Notes", "\n#{args[:notes] || args["notes"]}"}]
+      )
 
     entry_data =
       data

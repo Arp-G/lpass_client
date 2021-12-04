@@ -110,6 +110,7 @@ defmodule LpassClient.Api do
                          password,
                          note,
                          group,
+                         _fav,
                          last_modified_gmt,
                          last_touch
                        ] ->
