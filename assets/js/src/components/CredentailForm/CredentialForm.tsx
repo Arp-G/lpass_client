@@ -34,7 +34,7 @@ const CredentialForm: FC<Props> = () => {
   const deleteCredentialData = deleteCredential(dispatch);
 
   // TODO: Attempt to fetch id from server when dummy id
-  const isDummyId = urlParams.params.id && urlParams.params.id.startsWith('dummy-');
+  const isDummyId = urlParams.params.id && (urlParams.params.id.startsWith('dummy-') || urlParams.params.id == '0');
 
   // Disable submit button untill all fields have some value
   const valid = name.length;
@@ -58,7 +58,7 @@ const CredentialForm: FC<Props> = () => {
         setLoading(false);
         history.push("/");
       });
-  }
+  };
 
   const passwordToggleIconProps = {
     className: "inline-block text-3xl absolute mt-8 cursor-pointer",
@@ -136,7 +136,7 @@ const CredentialForm: FC<Props> = () => {
             ? <Loader />
             : <>
               {mode === "UPDATE" && <ImBin className="text-3xl text-red-500 mt-4 mr-6 cursor-pointer" onClick={onDelete} />}
-              {isDummyId ? null : <input
+              {isDummyId ? <div className='mt-4 font-semibold italic'> Sync with server to update </div> : <input
                 type="submit"
                 value={mode === "CREATE" ? "Save" : "Update"}
                 className={`p-2 italic cursor-pointer bg-red-600 text-white rounded-xl mt-3 mb-8 font-semibold ${!valid && 'opacity-50 cursor-not-allowed'}`}

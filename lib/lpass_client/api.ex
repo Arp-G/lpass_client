@@ -9,6 +9,8 @@ defmodule LpassClient.Api do
 
   @type error() :: {:error, :forbidden} | {:error, String.t()}
 
+  @max_sync_wait_time 10000
+
   @doc """
   Login to Lastpass
 
@@ -203,7 +205,25 @@ defmodule LpassClient.Api do
     name
     |> Cli.add(data)
     |> check_error(fn _ ->
-      Task.start(&LpassClient.Cli.sync/0)
+      current = self()
+
+      # Try to sync within timeout
+      child =
+        spawn(fn ->
+          Cli.sync()
+          send(current, {self(), :ok})
+        end)
+
+      receive do
+        {^child, :ok} ->
+          IO.puts("Synced")
+          nil
+      after
+        @max_sync_wait_time ->
+          IO.puts("Expired")
+          nil
+      end
+
       {:ok, true}
     end)
   end
@@ -222,7 +242,7 @@ defmodule LpassClient.Api do
     id
     |> Cli.edit(data)
     |> check_error(fn _ ->
-      Task.start(&LpassClient.Cli.sync/0)
+      Task.start(&Cli.sync/0)
       {:ok, true}
     end)
   end
@@ -243,7 +263,7 @@ defmodule LpassClient.Api do
   def delete(id) do
     Cli.rm(id)
     |> check_error(fn _ ->
-      Task.start(&LpassClient.Cli.sync/0)
+      Task.start(&Cli.sync/0)
       {:ok, true}
     end)
   end

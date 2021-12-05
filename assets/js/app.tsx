@@ -33,6 +33,8 @@ do attemp to fetch dummy id
 fix some times sorter wont work
 ui bug when opening pass modal on show page
 store sync password and auto sync without password repromt on susequent try
+look into note not saving/updating issue
+redirect to home after save/update/delete operations
 */
 
 const LpassApp = () => {

@@ -86,11 +86,12 @@ export const saveCredential = (dispatch: Dispatch<any>, mode: 'CREATE' | 'UPDATE
   ) => {
     return (
       mode === 'CREATE' ?
-        Api.post('/credentials', { name, url, username, password, note }).then(_response => {
-          dispatch(batchActions([
-            addOrUpdateCredentialAction({ id: getDummyId(), name, url, username, password, note }),
-            alertAction({ message: 'Saved!', type: 'SUCCESS' })
-          ]));
+        Api.post('/credentials', { name, url, username, password, note }).then(response => {
+          const actions = [alertAction({ message: 'Saved!', type: 'SUCCESS' })];
+          if (response.data.id && response.data.id === 0)
+            addOrUpdateCredentialAction({ id: response.data.id, name, url, username, password, note })
+
+          dispatch(batchActions(actions));
         }) :
         Api.patch(`/credentials/${id}`, { name, url, username, password, note })
           .then(_response => {
@@ -131,7 +132,7 @@ export const deleteCredential = (dispatch: Dispatch<any>) => {
 };
 
 export const fetchAllCredentials = (dispatch: Dispatch<any>) => {
-  return (password: string, setAllCredentials: (newValue: Credential[] | undefined) => void) => {
+  return (password: string, setAllCredentials: (credentials: Credential[] | undefined) => void) => {
     return Api.post('/export', { password })
       .then(response => {
         // Save in index db
