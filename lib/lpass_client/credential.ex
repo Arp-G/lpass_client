@@ -1,6 +1,6 @@
 defmodule LpassClient.Credential do
   @moduledoc """
-    Represents a credentail stored in lastpass
+    Represents a credential stored in lastpass
   """
 
   @enforce_keys [:id, :name]

@@ -219,7 +219,7 @@ defmodule LpassClient.Cli do
   # Private helper methods
   defp add_or_update_args(name_or_id, args, type) when type in [:add, :edit] do
     default_args = [
-      sync: "auto",
+      sync: "now",
       "non-interactive": true,
       field: false,
       "note-type": false

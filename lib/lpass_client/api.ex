@@ -128,6 +128,7 @@ defmodule LpassClient.Api do
 
   @doc """
   Get the Lastpass credential details for the given id or name
+  If multiple credentials are present having the same name then the last modified is returned
 
   ## Examples
     iex(5)> LpassClient.Api.get("123")
@@ -152,15 +153,37 @@ defmodule LpassClient.Api do
     Cli.show(id)
     |> check_error(fn resp ->
       case Jason.decode(resp) do
-        {:ok,
-         [
-           ~m{id, name, url, username, password, group, note, last_modified_gmt, last_touch}
-         ]} ->
-          {:ok, ~M{%Credential
-              id, name, url, username, password, group, note,
-              last_modified_gmt: parsed_timestamp(last_modified_gmt),
-              last_touch: parsed_timestamp(last_touch)
-            }}
+        {:ok, resp} when is_list(resp) and resp === [] ->
+          {:error, "Not found"}
+
+        {:ok, resp} when is_list(resp) ->
+          credential =
+            resp
+            |> Enum.map(
+              fn ~m{id, name, url, username, password, group, note, last_modified_gmt, last_touch} ->
+                ~M{%Credential id, name, url, username, password, group, note,
+                    last_modified_gmt: parsed_timestamp(last_modified_gmt),
+                    last_touch: parsed_timestamp(last_touch)
+                  }
+              end
+            )
+            |> Enum.sort(fn cred1, cred2 ->
+              datetime1 = cred1.last_modified_gmt || cred1.last_touch
+              datetime2 = cred2.last_modified_gmt || cred2.last_touch
+
+              if !is_struct(datetime1, DateTime) || !is_struct(datetime2, DateTime) do
+                false
+              else
+                case DateTime.compare(datetime2, datetime1) do
+                  :gt -> true
+                  :lt -> false
+                  :eq -> false
+                end
+              end
+            end)
+            |> List.first()
+
+          {:ok, credential}
 
         _ ->
           {:error, "Failed to parse response"}
@@ -179,7 +202,10 @@ defmodule LpassClient.Api do
   def create(name, data) when not is_nil(name) do
     name
     |> Cli.add(data)
-    |> check_error(fn _ -> {:ok, true} end)
+    |> check_error(fn _ ->
+      Task.start(&LpassClient.Cli.sync/0)
+      {:ok, true}
+    end)
   end
 
   def create(_name, _data), do: {:error, "Name is required"}
@@ -195,7 +221,10 @@ defmodule LpassClient.Api do
   def update(id, data) when not is_nil(id) do
     id
     |> Cli.edit(data)
-    |> check_error(fn _ -> {:ok, true} end)
+    |> check_error(fn _ ->
+      Task.start(&LpassClient.Cli.sync/0)
+      {:ok, true}
+    end)
   end
 
   def update(_id, _data), do: {:error, "Id is required"}
@@ -213,7 +242,10 @@ defmodule LpassClient.Api do
   @spec delete(String.t()) :: {:success, true} | error()
   def delete(id) do
     Cli.rm(id)
-    |> check_error(fn _ -> {:ok, true} end)
+    |> check_error(fn _ ->
+      Task.start(&LpassClient.Cli.sync/0)
+      {:ok, true}
+    end)
   end
 
   @doc """
@@ -231,7 +263,7 @@ defmodule LpassClient.Api do
   @spec logged_in? :: {:success, boolean} | error()
   def logged_in?() do
     Cli.status()
-    |> check_error(&({:ok, String.starts_with?(&1, "Logged in as")}))
+    |> check_error(&{:ok, String.starts_with?(&1, "Logged in as")})
   end
 
   defp check_error(resp, parser) do
@@ -258,19 +290,15 @@ defmodule LpassClient.Api do
     if unix_timestamp == 0 do
       nil
     else
-      DateTime.from_unix(unix_timestamp)
-      |> case do
-        {:ok, date_time} -> date_time
-        {:error, _} -> nil
-      end
+      DateTime.from_unix!(unix_timestamp)
     end
   rescue
     ArgumentError -> nil
   end
 
-  defp fetch_favicons(credentails) do
+  defp fetch_favicons(credentials) do
     favi_icons =
-      credentails
+      credentials
       |> Enum.map(fn ~M{%Credential url} ->
         Task.async(fn ->
           case HTTPoison.get("https://www.google.com/s2/favicons?sz=128&domain_url=#{url}") do
@@ -312,8 +340,8 @@ defmodule LpassClient.Api do
           nil
       end)
 
-    Enum.zip_with(credentails, favi_icons, fn credentail, favicon ->
-      %{credentail | favicon: favicon}
+    Enum.zip_with(credentials, favi_icons, fn credential, favicon ->
+      %{credential | favicon: favicon}
     end)
   end
 end

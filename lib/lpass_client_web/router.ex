@@ -28,9 +28,9 @@ defmodule LpassClientWeb.Router do
     pipe_through [:api, :token_auth]
 
     post "/sign_out", AuthController, :sign_out
-    resources "/credentials", CredentailsController, except: [:new, :edit]
-    post "/export", CredentailsController, :export
-    get "/login_status", CredentailsController, :status
+    resources "/credentials", CredentialsController, except: [:new, :edit]
+    post "/export", CredentialsController, :export
+    get "/login_status", CredentialsController, :status
   end
 
   # Enables the Swoosh mailbox preview in development.

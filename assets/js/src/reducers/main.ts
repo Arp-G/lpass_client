@@ -1,5 +1,14 @@
 import { Action } from "redux";
-import { SIGN_IN, SIGN_OUT, SYNC_ALL_CREDENTIALS, SET_SYNC_MODAL, SET_ALERT, CLEAR_ALERT, DELETE_CREDENTIAL } from '../constants/actionTypes';
+import {
+  SIGN_IN,
+  SIGN_OUT,
+  SAVE_ALL_CREDENTIALS,
+  SET_SYNC_MODAL,
+  SET_ALERT,
+  CLEAR_ALERT,
+  ADD_OR_UPDATE_CREDENTIAL,
+  DELETE_CREDENTIAL
+} from '../constants/actionTypes';
 import { CredentialsHash, Credential, AlertType } from '../Types/Types';
 
 export interface MainState {
@@ -24,25 +33,36 @@ const mainReducer = (state = initialState, action: ActionWithPayload<any>) => {
     case SIGN_OUT:
       return { ...state, token: null, allCredentials: {} };
 
-    case SYNC_ALL_CREDENTIALS:
+    case SAVE_ALL_CREDENTIALS:
       const allCredentials = action.payload.reduce((acc: CredentialsHash, credential: Credential) => {
         acc[credential.id] = credential;
         return acc;
       }, {});
 
-      return { ...state, allCredentials }
+      return { ...state, allCredentials };
 
-    // case ADD_CREDENTIAL:
-    //   ...state.allCredentials, {}
+    case ADD_OR_UPDATE_CREDENTIAL:
+      const currDateTime = new Date().toISOString();
+      return {
+        ...state,
+        allCredentials: {
+          ...state.allCredentials,
+          [action.payload.id]: {
+            ...action.payload,
+            last_modified_gmt: currDateTime,
+            last_touch: currDateTime
+          }
+        }
+      };
 
     case DELETE_CREDENTIAL:
       const credentials = Object.entries(state.allCredentials)
-        .filter(([id, _credentail]) => id !== action.payload);
+        .filter(([id, _credential]) => id !== action.payload);
 
-      return { ...state, allCredentials: Object.fromEntries(credentials) }
+      return { ...state, allCredentials: Object.fromEntries(credentials) };
 
     case SET_SYNC_MODAL:
-      return { ...state, syncModal: action.payload }
+      return { ...state, syncModal: action.payload };
 
     case SET_ALERT:
       return { ...state, alert: action.payload };

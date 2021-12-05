@@ -2,13 +2,13 @@ import React, { useState, useEffect, FC } from 'react';
 import { useHistory } from 'react-router';
 import { RiAddCircleFill } from 'react-icons/ri';
 import { HiSortDescending } from 'react-icons/hi';
-import { BiSync } from 'react-icons/bi';
 import { RiLockPasswordLine } from 'react-icons/ri';
+import { BiSync } from 'react-icons/bi';
+import { setSyncModal } from '../../actions';
 import useAppSelector from '../../hooks/useAppSelector';
 import useAppDispatch from '../../hooks/useAppDispatch';
 import CredentialItem from '../CredentialItem/CredentialItem';
 import SortModal from '../SortModal/SortModal';
-import { SET_SYNC_MODAL } from '../../constants/actionTypes';
 import { SortOrder, CredentialsHash } from '../../Types/Types';
 
 interface Props {
@@ -22,10 +22,11 @@ const Home: FC<Props> = () => {
   const [searchString, setSearchString] = useState<string>('');
   const [sortModal, setSortModal] = useState<boolean>(false);
   const [sortOrder, setSortOrder] = useState<SortOrder>('A-Z');
+  const openSyncModal = setSyncModal(dispatch);
 
   useEffect(() => {
     if (Object.keys(allCredentials).length === 0)
-      dispatch({ type: SET_SYNC_MODAL, payload: true });
+      openSyncModal(true);
   }, [allCredentials])
 
   return (

@@ -1,4 +1,4 @@
-defmodule LpassClientWeb.CredentailsController do
+defmodule LpassClientWeb.CredentialsController do
   use LpassClientWeb, :controller
   import ShorterMaps
   alias LpassClient.Api

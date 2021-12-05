@@ -1,12 +1,10 @@
 import React, { FC, useState, useEffect, SyntheticEvent } from 'react';
-import { batchActions } from 'redux-batched-actions';
 import useAppDispatch from '../../hooks/useAppDispatch';
 import { useHistory } from "react-router-dom";
 import { MdSecurity } from 'react-icons/md';
+import { signIn } from '../../actions/index';
 import { usePersistedState } from '../../hooks/usePersistedState';
 import Loader from '../Loader/Loader';
-import Api from '../../api/api';
-import { SET_ALERT, SIGN_IN } from '../../constants/actionTypes';
 
 interface Props {
   // any props that come into the component
@@ -15,6 +13,7 @@ interface Props {
 const SignIn: FC<Props> = () => {
   const dispatch = useAppDispatch();
   const history = useHistory();
+  const signInUser = signIn(dispatch);
 
   const [lpassUsername, changeLpassUsername] = useState<string>('');
   const [serverPassword, changeServerPassword] = useState<string>('');
@@ -36,31 +35,9 @@ const SignIn: FC<Props> = () => {
 
   const onSubmit = async (event: SyntheticEvent) => {
     event.preventDefault();
-    try {
-      setLoading(true);
-      const response = await Api.post('/sign_in', { lpassUsername, serverPassword, lpassPassword });
-
-      dispatch(batchActions([
-        {
-          type: SIGN_IN,
-          payload: response.data.token
-        },
-        {
-          type: SET_ALERT,
-          payload: { message: 'Sign in success!', type: 'SUCCESS', timeout: 3000 }
-        }
-      ]));
-
-      // Persist token in indexDB
-      setToken(response.data.token);
-    } catch (err) {
-      dispatch({
-        type: SET_ALERT,
-        payload: { message: 'Incorrect credentails, please try again!', type: 'WARNING' }
-      });
-    } finally {
-      setLoading(false);
-    }
+    setLoading(true);
+    signInUser(lpassUsername, serverPassword, lpassPassword, setToken)
+      .finally(() => setLoading(false))
   }
 
   return (

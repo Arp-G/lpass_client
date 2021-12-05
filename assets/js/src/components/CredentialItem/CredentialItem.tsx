@@ -7,7 +7,7 @@ interface Props {
   data: Credential
 }
 
-const CredentailItem: FC<Props> = ({ data }) => {
+const CredentialItem: FC<Props> = ({ data }) => {
   const history = useHistory();
 
   return (
@@ -31,4 +31,4 @@ const CredentailItem: FC<Props> = ({ data }) => {
     </li>);
 }
 
-export default CredentailItem;
+export default CredentialItem;
