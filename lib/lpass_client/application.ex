@@ -10,10 +10,16 @@ defmodule LpassClient.Application do
     children = [
       # Start the Telemetry supervisor
       LpassClientWeb.Telemetry,
+
       # Start the PubSub system
       {Phoenix.PubSub, name: LpassClient.PubSub},
+
+      # Genserver to periodically sync local app with lastpass server
+      LpassClient.Syncer,
+
       # Start the Endpoint (http/https)
       LpassClientWeb.Endpoint
+
       # Start a worker by calling: LpassClient.Worker.start_link(arg)
       # {LpassClient.Worker, arg}
     ]

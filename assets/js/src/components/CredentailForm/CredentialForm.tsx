@@ -43,7 +43,10 @@ const CredentialForm: FC<Props> = () => {
     event.preventDefault();
     setLoading(true);
     saveCredentialData({ id: urlParams.params.id, name, url, username, password, note })
-      .finally(() => setLoading(false))
+      .finally(() => {
+        setLoading(false);
+        history.push("/");
+      })
   }
 
   const onDelete = async (event: SyntheticEvent) => {

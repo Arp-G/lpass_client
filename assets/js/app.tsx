@@ -31,11 +31,12 @@ fix react state update on unmounted component bug - done
 do attempt to fetch dummy id - NA
 fix some times sorter wont work - seems to work
 ui bug when opening pass modal on show page - fixed
-store sync password and auto sync without password repromt on susequent try
+store sync password and auto sync without password repromt on susequent try - done
 look into note not saving/updating issue
-redirect to home after save/update/delete operations
-encrypted index db storage
+redirect to home after save/update/delete operations - done
+encrypted index db storage - NA same origin is enough
 add task to auto sync periodically
+Navbar styling
 */
 
 const LpassApp = () => {

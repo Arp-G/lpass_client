@@ -20,7 +20,7 @@ defmodule LpassClientWeb.CredentialsController do
   # TODO: Can't save notes and group data
   def create(conn, ~m{name} = params) do
     with {:success, true} <- Api.create(name, params) do
-      json(conn, %{id: "1200", message: "Successfully saved!"})
+      json(conn, %{id: get_credential(name), message: "Successfully saved!"})
     end
   end
 
