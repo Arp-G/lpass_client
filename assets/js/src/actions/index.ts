@@ -6,15 +6,18 @@ import Api from './../api/api';
 import {
   SIGN_IN,
   SIGN_OUT,
+  SAVE_LPASS,
   SAVE_ALL_CREDENTIALS,
   ADD_OR_UPDATE_CREDENTIAL,
   DELETE_CREDENTIAL,
   SET_ALERT,
   CLEAR_ALERT,
-  SET_SYNC_MODAL
+  SET_SYNC_MODAL,
+  TOGGLE_SYNC_LOADER
 } from '../constants/actionTypes';
 import { Credential, MessageType } from '../Types/Types';
 
+const saveLpassPasswordAction = createAction<string | null>(SAVE_LPASS);
 const signInAction = createAction<string | null>(SIGN_IN);
 const signOutAction = createAction<void>(SIGN_OUT);
 const saveAllCredentials = createAction<Credential[] | undefined>(SAVE_ALL_CREDENTIALS);
@@ -22,6 +25,7 @@ const addOrUpdateCredentialAction = createAction<Credential>(ADD_OR_UPDATE_CREDE
 const deleteCredentialAction = createAction<string>(DELETE_CREDENTIAL);
 const alertAction = createAction<{ message: string, type: MessageType, timeout?: number }>(SET_ALERT);
 const toggleSyncModalAction = createAction<boolean>(SET_SYNC_MODAL);
+const toggleSyncyingAction = createAction<void>(TOGGLE_SYNC_LOADER);
 const clearAlertAction = createAction<void>(CLEAR_ALERT);
 
 const handleForbiddenResponse = (dispatch: Dispatch<any>, error: any, elseCallback: () => void) => {
@@ -47,7 +51,7 @@ export const checkLoginStatusAndInitLocalState = (dispatch: Dispatch<any>) => {
           return;
         }
 
-        dispatch(batchActions([
+        dispatch(createBatchAction([
           signInAction(token),
           allCredentials && saveAllCredentials(allCredentials)
         ]));
@@ -65,20 +69,22 @@ export const signIn = (dispatch: Dispatch<any>) => {
     lpassPassword: string,
     saveToken: ((token: string | undefined) => void) | undefined
   ) => {
-    return Api.post('/sign_in', { lpassUsername, serverPassword, lpassPassword }).then((response) => {
-      dispatch(
-        batchActions([
-          signInAction(response.data.token),
-          alertAction({ message: 'Sign in success!', type: 'SUCCESS', timeout: 3000 })
-        ])
-      );
+    return Api.post('/sign_in', { lpassUsername, serverPassword, lpassPassword })
+      .then((response) => {
+        dispatch(
+          createBatchAction([
+            signInAction(response.data.token),
+            saveLpassPasswordAction(lpassPassword),
+            alertAction({ message: 'Sign in success!', type: 'SUCCESS', timeout: 3000 })
+          ])
+        );
 
-      // Persist token in indexDB
-      saveToken && saveToken(response.data.token);
-    }).catch(err => {
-      console.log(err.message);
-      dispatch(alertAction({ message: 'Incorrect credentials, please try again!', type: 'WARNING', timeout: 3000 }));
-    });
+        // Persist token in indexDB
+        saveToken && saveToken(response.data.token);
+      }).catch(err => {
+        console.log(err.message);
+        dispatch(alertAction({ message: 'Incorrect credentials, please try again!', type: 'WARNING', timeout: 3000 }));
+      });
   };
 };
 
@@ -92,8 +98,7 @@ export const signOut = (dispatch: Dispatch<any>, message = false) => {
       .finally(() => {
         delMany(['token', 'allCredentials'])
           .then(() => {
-            actions.unshift(signOutAction())
-            dispatch(batchActions([
+            dispatch(createBatchAction([
               signOutAction(),
               ...actions
             ]));
@@ -110,15 +115,15 @@ export const saveCredential = (dispatch: Dispatch<any>, mode: 'CREATE' | 'UPDATE
     return (
       mode === 'CREATE' ?
         Api.post('/credentials', { name, url, username, password, note }).then(response => {
-          const actions = [alertAction({ message: 'Saved!', type: 'SUCCESS' })];
-          if (response.data.id && response.data.id === 0)
-            addOrUpdateCredentialAction({ id: response.data.id, name, url, username, password, note })
-
-          dispatch(batchActions(actions));
+          const responsHasId = response.data.id && response.data.id !== 0;
+          dispatch(createBatchAction([
+            responsHasId && addOrUpdateCredentialAction({ id: response.data.id, name, url, username, password, note }),
+            alertAction({ message: 'Saved!', type: 'SUCCESS' })
+          ]));
         }) :
         Api.patch(`/credentials/${id}`, { name, url, username, password, note })
           .then(_response => {
-            dispatch(batchActions([
+            dispatch(createBatchAction([
               addOrUpdateCredentialAction({ id: id || getDummyId(), name, url, username, password, note }),
               alertAction({ message: 'Updated!', type: 'SUCCESS' })
             ]));
@@ -139,7 +144,7 @@ export const deleteCredential = (dispatch: Dispatch<any>) => {
     return Api.delete(`/credentials/${id}`)
       .then(_response => {
         // Update in local state
-        dispatch(batchActions([
+        dispatch(createBatchAction([
           deleteCredentialAction(id),
           alertAction({ message: 'Deleted!', type: 'SUCCESS' })
         ]));
@@ -156,22 +161,30 @@ export const deleteCredential = (dispatch: Dispatch<any>) => {
 
 export const fetchAllCredentials = (dispatch: Dispatch<any>) => {
   return (password: string, setAllCredentials: (credentials: Credential[] | undefined) => void) => {
+    dispatch(toggleSyncyingAction());
+
     return Api.post('/export', { password })
       .then(response => {
         // Save in index db
         setAllCredentials(response.data.data);
 
-        dispatch(batchActions([
+        dispatch(createBatchAction([
           saveAllCredentials(response.data.data),
           toggleSyncModalAction(false),
-          alertAction({ message: 'Success!', type: 'SUCCESS' })
+          saveLpassPasswordAction(password),
+          alertAction({ message: 'Synced successfully!', type: 'SUCCESS' }),
+          toggleSyncyingAction()
         ]));
       }).catch(err => {
         console.log(err.message);
         handleForbiddenResponse(
           dispatch,
           err,
-          () => dispatch(alertAction({ message: 'Failed, try again!', type: 'ERROR' }))
+          () => dispatch(
+            createBatchAction([
+              alertAction({ message: 'Failed, try again!', type: 'ERROR' }),
+              toggleSyncyingAction()
+            ]))
         );
       });
   };
@@ -187,4 +200,6 @@ export const clearAlert = (dispatch: Dispatch<any>) => {
   return () => dispatch(clearAlertAction());
 };
 
+// Helper functions
 const getDummyId = () => `dummy-${Date.now().toString()}`;
+const createBatchAction = (actionArray: Action<any>[]) => batchActions(actionArray.filter(action => action));

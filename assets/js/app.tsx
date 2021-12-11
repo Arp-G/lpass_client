@@ -27,14 +27,15 @@ in case of forbidden response. - done
 ref: https://redux.js.org/usage/reducing-boilerplate#actions
 
 
-fix react state update on unmounted component bug
-do attemp to fetch dummy id
-fix some times sorter wont work
-ui bug when opening pass modal on show page
+fix react state update on unmounted component bug - done
+do attempt to fetch dummy id - NA
+fix some times sorter wont work - seems to work
+ui bug when opening pass modal on show page - fixed
 store sync password and auto sync without password repromt on susequent try
 look into note not saving/updating issue
 redirect to home after save/update/delete operations
 encrypted index db storage
+add task to auto sync periodically
 */
 
 const LpassApp = () => {

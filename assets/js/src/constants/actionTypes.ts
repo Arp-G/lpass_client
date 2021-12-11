@@ -1,8 +1,10 @@
 export const SIGN_IN = 'SIGN_IN';
 export const SIGN_OUT = 'SIGN_OUT';
+export const SAVE_LPASS = 'SAVE_LPASS';
 export const SET_ALERT = 'SET_ALERT';
 export const CLEAR_ALERT = 'CLEAR_ALERT';
 export const SAVE_ALL_CREDENTIALS = 'SAVE_ALL_CREDENTIALS';
 export const SET_SYNC_MODAL = 'SET_SYNC_MODAL';
+export const TOGGLE_SYNC_LOADER = 'TOGGLE_SYNC_LOADER';
 export const ADD_OR_UPDATE_CREDENTIAL = 'ADD_OR_UPDATE_CREDENTIAL';
 export const DELETE_CREDENTIAL = 'DELETE_CREDENTIAL';

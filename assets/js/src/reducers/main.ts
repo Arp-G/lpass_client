@@ -2,8 +2,10 @@ import { Action } from "redux";
 import {
   SIGN_IN,
   SIGN_OUT,
+  SAVE_LPASS,
   SAVE_ALL_CREDENTIALS,
   SET_SYNC_MODAL,
+  TOGGLE_SYNC_LOADER,
   SET_ALERT,
   CLEAR_ALERT,
   ADD_OR_UPDATE_CREDENTIAL,
@@ -15,14 +17,23 @@ export interface MainState {
   token?: string,
   alert?: AlertType,
   syncModal: boolean,
-  allCredentials: CredentialsHash
+  allCredentials: CredentialsHash,
+  lastpass: string | null,
+  syncying: boolean
 }
 
 interface ActionWithPayload<T> extends Action {
   payload: T;
 }
 
-const initialState: MainState = { token: undefined, alert: undefined, syncModal: false, allCredentials: {} };
+const initialState: MainState = {
+  token: undefined,
+  alert: undefined,
+  syncModal: false,
+  allCredentials: {},
+  lastpass: null,
+  syncying: false
+};
 
 const mainReducer = (state = initialState, action: ActionWithPayload<any>) => {
   switch (action.type) {
@@ -32,6 +43,9 @@ const mainReducer = (state = initialState, action: ActionWithPayload<any>) => {
 
     case SIGN_OUT:
       return { ...state, token: null, allCredentials: {} };
+
+    case SAVE_LPASS:
+      return { ...state, lastpass: action.payload };
 
     case SAVE_ALL_CREDENTIALS:
       const allCredentials = action.payload.reduce((acc: CredentialsHash, credential: Credential) => {
@@ -63,6 +77,9 @@ const mainReducer = (state = initialState, action: ActionWithPayload<any>) => {
 
     case SET_SYNC_MODAL:
       return { ...state, syncModal: action.payload };
+
+    case TOGGLE_SYNC_LOADER:
+      return { ...state, syncying: !state.syncying };
 
     case SET_ALERT:
       return { ...state, alert: action.payload };

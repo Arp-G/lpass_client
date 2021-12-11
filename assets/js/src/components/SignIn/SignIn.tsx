@@ -3,7 +3,7 @@ import useAppDispatch from '../../hooks/useAppDispatch';
 import { useHistory } from "react-router-dom";
 import { MdSecurity } from 'react-icons/md';
 import { signIn } from '../../actions/index';
-import { usePersistedState } from '../../hooks/usePersistedState';
+import usePersistedState from '../../hooks/usePersistedState';
 import Loader from '../Loader/Loader';
 
 interface Props {

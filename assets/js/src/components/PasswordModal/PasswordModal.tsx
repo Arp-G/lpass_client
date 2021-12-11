@@ -4,7 +4,8 @@ import { AiOutlineCloseCircle } from 'react-icons/ai'
 import { setSyncModal, fetchAllCredentials } from '../../actions/index';
 import useAppDispatch from '../../hooks/useAppDispatch';
 import Loader from '../Loader/Loader';
-import { usePersistedState } from '../../hooks/usePersistedState';
+import usePersistedState from '../../hooks/usePersistedState';
+import useIsMounted from '../../hooks/useIsMounted';
 import { Credential } from '../../Types/Types';
 
 interface Props { };
@@ -13,20 +14,21 @@ const PasswordModal: FC<Props> = () => {
   const [password, setPassword] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
   const dispatch = useAppDispatch();
+  const isMounted = useIsMounted();
   const [_allCrendentails, setAllCredentials] = usePersistedState<Credential[] | undefined>('allCredentials', undefined);
-  const fetchAndSaveAllCredentials = fetchAllCredentials(dispatch);
+  const dispatchfetchAllCredentials = fetchAllCredentials(dispatch);
   const closeSyncModal = setSyncModal(dispatch);
 
   const onSubmit = (event: SyntheticEvent) => {
     event.preventDefault();
     setLoading(true);
 
-    fetchAndSaveAllCredentials(password, setAllCredentials)
-      .finally(() => setLoading(false))
+    dispatchfetchAllCredentials(password, setAllCredentials)
+      .finally(() => isMounted && setLoading(false))
   }
 
   return (
-    <div className="modal fixed w-full h-full top-0 left-0 flex items-center justify-center">
+    <div className="modal fixed w-full h-full top-0 left-0 flex items-center justify-center z-50">
       <div className="modal-overlay absolute w-full h-full bg-gray-900 opacity-50"></div>
       <div className="modal-container border-4 bg-white w-11/12 h-64 md:max-w-md mx-auto rounded shadow-lg z-50 overflow-y-auto">
         <div className="flex flex-row h-4">

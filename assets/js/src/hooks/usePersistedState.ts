@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { set, get } from "idb-keyval";
 
-export function usePersistedState<T>(key: string, defaultValue: T) {
+export default function usePersistedState<T>(key: string, defaultValue: T) {
   const [state, setState] = useState<T | undefined>(undefined);
 
   // When this hook is loaded or any of the deps change then if key not 

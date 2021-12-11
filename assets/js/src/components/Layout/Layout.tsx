@@ -12,13 +12,13 @@ interface Props {
 }
 const Layout: FC<Props> = ({ children }) => {
   const dispatch = useAppDispatch();
-  const [token, allCredentials, syncModal, alert]: [string, CredentialsHash, boolean, AlertType]
-    = useAppSelector((state) => [state.main.token, state.main.allCredentials, state.main.syncModal, state.main.alert]);
+  const [token, lastpass, allCredentials, syncModal, alert]: [string, string | null, CredentialsHash, boolean, AlertType]
+    = useAppSelector((state) => [state.main.token, state.main.lastpass, state.main.allCredentials, state.main.syncModal, state.main.alert]);
   const openSyncModal = setSyncModal(dispatch);
   const clearAlertToast = clearAlert(dispatch);
 
   useEffect(() => {
-    if (token && Object.keys(allCredentials).length === 0) {
+    if (token && Object.keys(allCredentials).length === 0 && !lastpass) {
       openSyncModal(true)
     }
   }, []);
