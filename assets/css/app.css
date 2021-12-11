@@ -1,3 +1,10 @@
 @import "tailwindcss/base";
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
+
+@layer base {
+  @font-face {
+    font-family: 'Bakbak One', cursive;
+    src: local('BakbakOne'), url("/home/arpan/dev/lpass_client/assets/fonts/BakbakOne-Regular.ttf") format('ttf');
+  }
+}
