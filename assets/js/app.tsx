@@ -17,6 +17,10 @@ import CredentialForm from './src/components/CredentailForm/CredentialForm';
 TODO:
 
 look into note not saving/updating issue
+look into scroll bar issues
+Dark mode
+Offile mode
+PWA
 */
 
 const LpassApp = () => {
