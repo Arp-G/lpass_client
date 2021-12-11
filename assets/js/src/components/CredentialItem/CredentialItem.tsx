@@ -13,7 +13,7 @@ const CredentialItem: FC<Props> = ({ data }) => {
   return (
     <li
       key={data.id}
-      className="flex mt-4 pb-2 space-x-6 border-b-2"
+      className="flex mt-4 pb-2 space-x-6 border-b-2 cursor-pointer"
       onClick={() => history.push(`/credentials/${data.id}`)}
     >
       <div>

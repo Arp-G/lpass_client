@@ -24,7 +24,7 @@ const Navbar: FC = () => {
 
   return (
     <div className="flex sticky bottom-6 top-0 w-screen h-16 bg-red-600 font-semibold text-3xl justify-center items-center">
-      <div className="m-auto relative left-6 text-3xl italic"> Lastpass </div>
+      <div className={`m-auto ${token ? 'relative left-6' : ''} text-3xl italic`}> Lastpass </div>
       {
         token &&
         <div className="pr-2 cursor-pointer">

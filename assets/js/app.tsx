@@ -10,33 +10,13 @@ import ProtectedRoute from './ProtectedRoute';
 import Layout from './src/components/Layout/Layout';
 import SignIn from './src/components/SignIn/SignIn';
 import Home from './src/components/Home/Home';
+import SplashScreen from './src/components/SplashScreen/SplashScreen';
 import CredentialForm from './src/components/CredentailForm/CredentialForm';
 
 /*
 TODO:
 
-Move all dispatch calls to be done via actions. - done
-Define actions in separate actions/index.js file -done 
-Define action using "redux-actions" - done 
-Make actions for making api calls and dispatching - done
-batch actions whenever possible - done
-
-For all authenticated API calls make sure to redirect to sign in
-in case of forbidden response. - done
-
-ref: https://redux.js.org/usage/reducing-boilerplate#actions
-
-
-fix react state update on unmounted component bug - done
-do attempt to fetch dummy id - NA
-fix some times sorter wont work - seems to work
-ui bug when opening pass modal on show page - fixed
-store sync password and auto sync without password repromt on susequent try - done
 look into note not saving/updating issue
-redirect to home after save/update/delete operations - done
-encrypted index db storage - NA same origin is enough
-add task to auto sync periodically
-Navbar styling
 */
 
 const LpassApp = () => {
@@ -66,7 +46,7 @@ const LpassApp = () => {
   }, [allCredentials]);
 
   if (tokenLoaded === undefined)
-    return <div>Loading...</div>
+    return <SplashScreen />;
 
   return (
     <Layout>
