@@ -22,6 +22,7 @@ defmodule LpassClientWeb.Router do
     pipe_through [:api]
 
     post "/sign_in", AuthController, :sign_in
+    get "/login_status", CredentialsController, :status
   end
 
   scope "/api", LpassClientWeb do
@@ -30,7 +31,6 @@ defmodule LpassClientWeb.Router do
     post "/sign_out", AuthController, :sign_out
     resources "/credentials", CredentialsController, except: [:new, :edit]
     post "/export", CredentialsController, :export
-    get "/login_status", CredentialsController, :status
   end
 
   # Enables the Swoosh mailbox preview in development.

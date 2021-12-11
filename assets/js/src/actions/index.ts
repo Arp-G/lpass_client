@@ -15,7 +15,7 @@ import {
 } from '../constants/actionTypes';
 import { Credential, MessageType } from '../Types/Types';
 
-const signInAction = createAction<string>(SIGN_IN);
+const signInAction = createAction<string | null>(SIGN_IN);
 const signOutAction = createAction<void>(SIGN_OUT);
 const saveAllCredentials = createAction<Credential[] | undefined>(SAVE_ALL_CREDENTIALS);
 const addOrUpdateCredentialAction = createAction<Credential>(ADD_OR_UPDATE_CREDENTIAL);
@@ -25,13 +25,37 @@ const toggleSyncModalAction = createAction<boolean>(SET_SYNC_MODAL);
 const clearAlertAction = createAction<void>(CLEAR_ALERT);
 
 const handleForbiddenResponse = (dispatch: Dispatch<any>, error: any, elseCallback: () => void) => {
+  const dispatchSignOut = signOut(dispatch);
   console.log(error?.response?.status)
   if (error?.response?.status === 403) {
-    signOut(dispatch);
+    dispatchSignOut();
     dispatch(alertAction({ message: 'Login expired, Login to continue!', type: 'WARNING', timeout: 3000 }));
   } else {
     elseCallback();
   }
+}
+
+export const checkLoginStatusAndInitLocalState = (dispatch: Dispatch<any>) => {
+  return (token: string | null, allCredentials: Credential[]) => {
+    const dispatchSignOut = signOut(dispatch);
+
+    return Api.get('/login_status')
+      .then(response => {
+
+        if (!response?.data?.logged_in) {
+          dispatchSignOut();
+          return;
+        }
+
+        dispatch(batchActions([
+          signInAction(token),
+          allCredentials && saveAllCredentials(allCredentials)
+        ]));
+
+      }).catch(() => {
+        dispatchSignOut();
+      });
+  };
 }
 
 export const signIn = (dispatch: Dispatch<any>) => {
@@ -78,7 +102,6 @@ export const signOut = (dispatch: Dispatch<any>, message = false) => {
   }
 };
 
-// TODO: Save created/updated data in local state
 export const saveCredential = (dispatch: Dispatch<any>, mode: 'CREATE' | 'UPDATE') => {
   return (
     { id, name, url, username, password, note }
