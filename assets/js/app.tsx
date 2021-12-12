@@ -28,16 +28,17 @@ const LpassApp = () => {
   const loadState = checkLoginStatusAndInitLocalState(dispatch);
 
   // Serves as a check, used to display loading until persisted state is loaded into store.
-  const [tokenLoaded, allCredentials] = useAppSelector(state => [state.main.token, state.main.allCredentials]);
+  const [tokenLoaded, allCredentials, darkMode] = useAppSelector(state => [state.main.token, state.main.allCredentials, state.main.darkMode]);
 
   // On App load find and load persisted state in store
   useEffect(() => {
-    getMany(['token', 'allCredentials'])
-      .then(([token, credentails]) => loadState(token || null, credentails))
+    getMany(['token', 'allCredentials', 'darkMode'])
+      .then(([token, credentails, darkMode]) => loadState(token || null, credentails, darkMode))
   }, []);
 
   const previousAllCredentials = usePrevious<CredentialsHash>(allCredentials);
 
+  // When credentails list changes persist new changes to indexDB
   useEffect(() => {
     // Prevent uneeded indexDB update when loading state initially
     if (
@@ -48,6 +49,12 @@ const LpassApp = () => {
       set('allCredentials', Object.values(allCredentials))
     }
   }, [allCredentials]);
+
+  // When dark mode preference changes persist new changes to indexDB
+  useEffect(() => {
+    set('darkMode', darkMode);
+    console.log("Persist dark mode change");
+  }, [darkMode]);
 
   if (tokenLoaded === undefined)
     return <SplashScreen />;

@@ -12,8 +12,16 @@ interface Props {
 }
 const Layout: FC<Props> = ({ children }) => {
   const dispatch = useAppDispatch();
-  const [token, lastpass, allCredentials, syncModal, alert]: [string, string | null, CredentialsHash, boolean, AlertType]
-    = useAppSelector((state) => [state.main.token, state.main.lastpass, state.main.allCredentials, state.main.syncModal, state.main.alert]);
+  const [darkMode, token, lastpass, allCredentials, syncModal, alert]
+    : [boolean, string, string | null, CredentialsHash, boolean, AlertType]
+    = useAppSelector((state) => [
+      state.main.darkMode,
+      state.main.token,
+      state.main.lastpass,
+      state.main.allCredentials,
+      state.main.syncModal,
+      state.main.alert
+    ]);
   const openSyncModal = setSyncModal(dispatch);
   const clearAlertToast = clearAlert(dispatch);
 
@@ -24,6 +32,7 @@ const Layout: FC<Props> = ({ children }) => {
   }, []);
 
   useEffect(() => {
+    console.log("alert");
     let timer: ReturnType<typeof setTimeout>;
     if (alert)
       timer = setTimeout(() => clearAlertToast(), alert.timeout || 5000);
@@ -32,7 +41,7 @@ const Layout: FC<Props> = ({ children }) => {
   }, [alert]);
 
   return (
-    <div>
+    <div className={`${darkMode ? 'dark' : ''}`}>
       <Navbar />
       {syncModal && <PasswordModal />}
       {children}

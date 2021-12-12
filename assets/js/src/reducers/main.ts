@@ -9,7 +9,9 @@ import {
   SET_ALERT,
   CLEAR_ALERT,
   ADD_OR_UPDATE_CREDENTIAL,
-  DELETE_CREDENTIAL
+  DELETE_CREDENTIAL,
+  SAVE_DARK_MODE,
+  TOGGLE_DARK_MODE
 } from '../constants/actionTypes';
 import { CredentialsHash, Credential, AlertType } from '../Types/Types';
 
@@ -19,7 +21,8 @@ export interface MainState {
   syncModal: boolean,
   allCredentials: CredentialsHash,
   lastpass: string | null,
-  syncying: boolean
+  syncying: boolean,
+  darkMode: boolean
 }
 
 interface ActionWithPayload<T> extends Action {
@@ -32,7 +35,8 @@ const initialState: MainState = {
   syncModal: false,
   allCredentials: {},
   lastpass: null,
-  syncying: false
+  syncying: false,
+  darkMode: false
 };
 
 const mainReducer = (state = initialState, action: ActionWithPayload<any>) => {
@@ -86,6 +90,12 @@ const mainReducer = (state = initialState, action: ActionWithPayload<any>) => {
 
     case CLEAR_ALERT:
       return { ...state, alert: undefined };
+
+    case SAVE_DARK_MODE:
+      return { ...state, darkMode: action.payload }
+
+    case TOGGLE_DARK_MODE:
+      return { ...state, darkMode: !state.darkMode }
 
     default:
       return state;

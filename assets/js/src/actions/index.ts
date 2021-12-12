@@ -13,20 +13,24 @@ import {
   SET_ALERT,
   CLEAR_ALERT,
   SET_SYNC_MODAL,
-  TOGGLE_SYNC_LOADER
+  TOGGLE_SYNC_LOADER,
+  SAVE_DARK_MODE,
+  TOGGLE_DARK_MODE
 } from '../constants/actionTypes';
 import { Credential, MessageType } from '../Types/Types';
 
 const saveLpassPasswordAction = createAction<string | null>(SAVE_LPASS);
 const signInAction = createAction<string | null>(SIGN_IN);
 const signOutAction = createAction<void>(SIGN_OUT);
-const saveAllCredentials = createAction<Credential[] | undefined>(SAVE_ALL_CREDENTIALS);
+const saveAllCredentialsAction = createAction<Credential[] | undefined>(SAVE_ALL_CREDENTIALS);
 const addOrUpdateCredentialAction = createAction<Credential>(ADD_OR_UPDATE_CREDENTIAL);
 const deleteCredentialAction = createAction<string>(DELETE_CREDENTIAL);
 const alertAction = createAction<{ message: string, type: MessageType, timeout?: number }>(SET_ALERT);
 const toggleSyncModalAction = createAction<boolean>(SET_SYNC_MODAL);
 const toggleSyncyingAction = createAction<void>(TOGGLE_SYNC_LOADER);
 const clearAlertAction = createAction<void>(CLEAR_ALERT);
+const saveDarkModeAction = createAction<boolean>(SAVE_DARK_MODE);
+const toggleDarkModeAction = createAction<void>(TOGGLE_DARK_MODE);
 
 const handleForbiddenResponse = (dispatch: Dispatch<any>, error: any, elseCallback: () => void) => {
   const dispatchSignOut = signOut(dispatch);
@@ -40,8 +44,9 @@ const handleForbiddenResponse = (dispatch: Dispatch<any>, error: any, elseCallba
 }
 
 export const checkLoginStatusAndInitLocalState = (dispatch: Dispatch<any>) => {
-  return (token: string | null, allCredentials: Credential[]) => {
+  return (token: string | null, allCredentials: Credential[], darkMode: boolean | undefined) => {
     const dispatchSignOut = signOut(dispatch);
+    const dark = darkMode === undefined ? window.matchMedia('(prefers-color-scheme: dark)').matches : darkMode;
 
     return Api.get('/login_status')
       .then(response => {
@@ -53,7 +58,8 @@ export const checkLoginStatusAndInitLocalState = (dispatch: Dispatch<any>) => {
 
         dispatch(createBatchAction([
           signInAction(token),
-          allCredentials && saveAllCredentials(allCredentials)
+          allCredentials && saveAllCredentialsAction(allCredentials),
+          saveDarkModeAction(dark)
         ]));
 
       }).catch(() => {
@@ -169,7 +175,7 @@ export const fetchAllCredentials = (dispatch: Dispatch<any>) => {
         setAllCredentials(response.data.data);
 
         dispatch(createBatchAction([
-          saveAllCredentials(response.data.data),
+          saveAllCredentialsAction(response.data.data),
           toggleSyncModalAction(false),
           saveLpassPasswordAction(password),
           alertAction({ message: 'Synced successfully!', type: 'SUCCESS' }),
@@ -196,10 +202,10 @@ export const setSyncModal = (dispatch: Dispatch<any>) => {
   }
 };
 
-export const clearAlert = (dispatch: Dispatch<any>) => {
-  return () => dispatch(clearAlertAction());
-};
+export const clearAlert = (dispatch: Dispatch<any>) => () => dispatch(clearAlertAction());
+
+export const toggleDarkMode = (dispatch: Dispatch<any>) => () => dispatch(toggleDarkModeAction());
 
 // Helper functions
-const getDummyId = () => `dummy-${Date.now().toString()}`;
 const createBatchAction = (actionArray: Action<any>[]) => batchActions(actionArray.filter(action => action));
+const getDummyId = () => `dummy-${Date.now().toString()}`;

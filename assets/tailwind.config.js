@@ -4,7 +4,10 @@ module.exports = {
     './js/**/*.{js,jsx,ts,tsx}',
     '../lib/*_web/**/*.*ex'
   ],
-  darkMode: false,
+
+  // Toggling dark mode manually
+  darkMode: 'class',
+  
   theme: {
     extend: {
       // Override tailwind default "sans" font with custom font "BakBakOne"
