@@ -4,30 +4,36 @@ import { RiAddCircleFill } from 'react-icons/ri';
 import { HiSortDescending } from 'react-icons/hi';
 import { RiLockPasswordLine } from 'react-icons/ri';
 import { BiSync } from 'react-icons/bi';
-import { setSyncModal } from '../../actions';
+import { setSyncModal, fetchAllCredentials } from '../../actions/index';
 import useAppSelector from '../../hooks/useAppSelector';
 import useAppDispatch from '../../hooks/useAppDispatch';
+import usePersistedState from '../../hooks/usePersistedState'
 import CredentialItem from '../CredentialItem/CredentialItem';
 import SortModal from '../SortModal/SortModal';
-import { SortOrder, CredentialsHash } from '../../Types/Types';
+import { SortOrder, Credential, CredentialsHash } from '../../Types/Types';
 
 interface Props {
   // any props that come into the component
 }
 
 const Home: FC<Props> = () => {
-  const allCredentials: CredentialsHash = useAppSelector(state => state.main.allCredentials);
+  const [allCredentials, lastpass]: [CredentialsHash, string] = useAppSelector(state => [state.main.allCredentials, state.main.lastpass]);
   const dispatch = useAppDispatch();
   const history = useHistory();
   const [searchString, setSearchString] = useState<string>('');
   const [sortModal, setSortModal] = useState<boolean>(false);
   const [sortOrder, setSortOrder] = useState<SortOrder>('A-Z');
+  const [_allCrendentails, setAllCredentials] = usePersistedState<Credential[] | undefined>('allCredentials', undefined);
+  const dispatchfetchAllCredentials = fetchAllCredentials(dispatch);
   const openSyncModal = setSyncModal(dispatch);
 
   useEffect(() => {
-    if (Object.keys(allCredentials).length === 0)
+    if (lastpass) {
+      dispatchfetchAllCredentials(lastpass, setAllCredentials)
+    } else if (Object.keys(allCredentials).length === 0) {
       openSyncModal(true);
-  }, [allCredentials])
+    }
+  }, [])
 
   return (
     <div className="w-screen dark:bg-gray-600">
