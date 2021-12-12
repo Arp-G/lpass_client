@@ -30,7 +30,7 @@ const Home: FC<Props> = () => {
   }, [allCredentials])
 
   return (
-    <div className="w-screen">
+    <div className="w-screen dark:bg-gray-600">
       <div className="border-2 flex justify-between bg-gray-200 sticky top-16 w-screen">
         <input
           type="text"

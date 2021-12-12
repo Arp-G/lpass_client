@@ -24,8 +24,8 @@ const CredentialItem: FC<Props> = ({ data }) => {
         }
       </div>
       <div>
-        <div className={`font-mono font-semibold text-md`}>{data.name}</div>
-        {data.username && <div className="font-medium text-gray-400">{data.username}</div>}
+        <div className={`font-mono font-semibold text-md dark:text-white`}>{data.name}</div>
+        {data.username && <div className="font-medium text-gray-400 dark:text-gray-300">{data.username}</div>}
       </div>
       <hr />
     </li>);
