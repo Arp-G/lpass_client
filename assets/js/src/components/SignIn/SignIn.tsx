@@ -41,7 +41,7 @@ const SignIn: FC<Props> = () => {
   }
 
   return (
-    <div className="flex border-2 w-screen h-screen flex-col items-center">
+    <div className="flex w-screen h-screen flex-col items-center dark:bg-gray-400">
       <div className="mt-16">
         <MdSecurity className="text-6xl text-red-600" />
       </div>

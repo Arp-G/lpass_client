@@ -32,7 +32,6 @@ const Layout: FC<Props> = ({ children }) => {
   }, []);
 
   useEffect(() => {
-    console.log("alert");
     let timer: ReturnType<typeof setTimeout>;
     if (alert)
       timer = setTimeout(() => clearAlertToast(), alert.timeout || 5000);

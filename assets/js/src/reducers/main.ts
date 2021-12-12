@@ -22,7 +22,7 @@ export interface MainState {
   allCredentials: CredentialsHash,
   lastpass: string | null,
   syncying: boolean,
-  darkMode: boolean
+  darkMode: boolean | undefined
 }
 
 interface ActionWithPayload<T> extends Action {
@@ -36,7 +36,7 @@ const initialState: MainState = {
   allCredentials: {},
   lastpass: null,
   syncying: false,
-  darkMode: false
+  darkMode: undefined
 };
 
 const mainReducer = (state = initialState, action: ActionWithPayload<any>) => {

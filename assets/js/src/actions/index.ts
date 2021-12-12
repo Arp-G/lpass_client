@@ -47,6 +47,7 @@ export const checkLoginStatusAndInitLocalState = (dispatch: Dispatch<any>) => {
   return (token: string | null, allCredentials: Credential[], darkMode: boolean | undefined) => {
     const dispatchSignOut = signOut(dispatch);
     const dark = darkMode === undefined ? window.matchMedia('(prefers-color-scheme: dark)').matches : darkMode;
+    dispatch(saveDarkModeAction(dark));
 
     return Api.get('/login_status')
       .then(response => {
@@ -58,8 +59,7 @@ export const checkLoginStatusAndInitLocalState = (dispatch: Dispatch<any>) => {
 
         dispatch(createBatchAction([
           signInAction(token),
-          allCredentials && saveAllCredentialsAction(allCredentials),
-          saveDarkModeAction(dark)
+          allCredentials && saveAllCredentialsAction(allCredentials)
         ]));
 
       }).catch(() => {

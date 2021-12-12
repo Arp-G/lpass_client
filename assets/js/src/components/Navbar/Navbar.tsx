@@ -27,9 +27,11 @@ const Navbar: FC = () => {
 
   return (
     <div className="flex sticky bottom-6 top-0 w-screen h-16 bg-red-600 font-semibold text-3xl justify-center items-center">
-      <div className="w-9 text-center rounded-full bg-white ml-2 border-2" onClick={dispatchToggleDarkMode}>
-        {darkMode ? <FaSun className="text-yellow-600" /> : <FaMoon className="text-blue-900" />}
-      </div>
+      {token &&
+        <div className="w-9 text-center rounded-full bg-white ml-2 border-2" onClick={dispatchToggleDarkMode}>
+          {darkMode ? <FaSun className="text-yellow-600" /> : <FaMoon className="text-blue-900" />}
+        </div>
+      }
 
       <div className={`m-auto ${token ? 'relative left-4' : ''} text-3xl italic`}> Lastpass </div>
       {

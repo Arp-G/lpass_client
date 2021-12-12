@@ -37,6 +37,7 @@ const LpassApp = () => {
   }, []);
 
   const previousAllCredentials = usePrevious<CredentialsHash>(allCredentials);
+  const previousDarkMode = usePrevious<boolean | undefined>(darkMode);
 
   // When credentails list changes persist new changes to indexDB
   useEffect(() => {
@@ -50,10 +51,12 @@ const LpassApp = () => {
     }
   }, [allCredentials]);
 
-  // When dark mode preference changes persist new changes to indexDB
+  // When dark mode preference changes persist new change to indexDB
   useEffect(() => {
+    // When dark mode setting loaded from index db or initial state
+    // then avoid persisting in index db.
+    if (previousDarkMode === undefined || darkMode === undefined) return;
     set('darkMode', darkMode);
-    console.log("Persist dark mode change");
   }, [darkMode]);
 
   if (tokenLoaded === undefined)
