@@ -40,7 +40,7 @@ const Layout: FC<Props> = ({ children }) => {
   }, [alert]);
 
   return (
-    <div className={`${darkMode ? 'dark' : ''}`}>
+    <div className={`${darkMode ? 'dark bg-gray-400' : ''} min-h-full`}>
       <Navbar />
       {syncModal && <PasswordModal />}
       {children}

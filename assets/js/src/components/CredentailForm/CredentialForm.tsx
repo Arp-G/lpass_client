@@ -70,7 +70,7 @@ const CredentialForm: FC<Props> = () => {
   };
 
   return (
-    <div className="w-screen h-screen dark:bg-gray-400">
+    <div className="dark:bg-gray-400">
       <form
         className="flex flex-col items-center text-lg"
         onSubmit={onSubmit}

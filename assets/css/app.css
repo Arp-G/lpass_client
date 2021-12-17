@@ -1,35 +1,4 @@
-// normalize css
-body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,form,fieldset,input,textarea,p,blockquote,th,td { 
-    margin:0;
-    padding:0;
-}
-table {
-    border-collapse:collapse;
-    border-spacing:0;
-}
-fieldset,img { 
-    border:0;
-}
-address,caption,cite,code,dfn,em,strong,th,var {
-    font-style:normal;
-    font-weight:normal;
-}
-ol,ul {
-    list-style:none;
-}
-caption,th {
-    text-align:left;
-}
-h1,h2,h3,h4,h5,h6 {
-    font-size:100%;
-    font-weight:normal;
-}
-q:before,q:after {
-    content:'';
-}
-abbr,acronym { border:0;}
-
-// Tailwind
+/* Tailwind */
 @import "tailwindcss/base";
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
@@ -39,4 +8,19 @@ abbr,acronym { border:0;}
     font-family: 'Bakbak One', cursive;
     src: local('BakbakOne'), url("/home/arpan/dev/lpass_client/assets/fonts/BakbakOne-Regular.ttf") format('ttf');
   }
+}
+
+/* My Stlyes */
+.container {
+  min-width: 100%;
+  height: 100%;
+}
+
+#root {
+  height: 100%;
+}
+
+html, body {
+  height: 100%;
+  margin: 0;
 }

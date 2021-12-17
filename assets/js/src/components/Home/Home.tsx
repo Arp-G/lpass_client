@@ -36,8 +36,8 @@ const Home: FC<Props> = () => {
   }, [])
 
   return (
-    <div className="w-screen min-h-screen dark:bg-gray-600">
-      <div className="border-2 flex justify-between bg-gray-200 sticky top-16 w-screen">
+    <div className="dark:bg-gray-600">
+      <div className="border-2 flex justify-between bg-gray-200 sticky top-16">
         <input
           type="text"
           name="name"
@@ -59,7 +59,7 @@ const Home: FC<Props> = () => {
         />}
       {Object.keys(allCredentials).length === 0
         ?
-        <div className="h-96 mt-16 flex flex-col justify-center items-center w-screen">
+        <div className="h-96 mt-16 flex flex-col justify-center items-center">
           <div className="text-center text-lg font-semibold italic">
             No credentials found, click on <BiSync className="text-2xl font-bold text-center inline text-red-600" /> to sync with server.
           </div>

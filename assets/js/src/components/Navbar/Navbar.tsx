@@ -26,7 +26,7 @@ const Navbar: FC = () => {
   }
 
   return (
-    <div className="flex sticky bottom-6 top-0 w-screen h-16 bg-red-600 font-semibold text-3xl justify-center items-center">
+    <div className="flex sticky w-full bottom-6 top-0 h-16 bg-red-600 font-semibold text-3xl justify-center items-center">
       {token &&
         <div className="w-9 text-center rounded-full bg-white ml-2 border-2" onClick={dispatchToggleDarkMode}>
           {darkMode ? <FaSun className="text-yellow-600" /> : <FaMoon className="text-blue-900" />}

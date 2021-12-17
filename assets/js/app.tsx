@@ -17,8 +17,7 @@ import CredentialForm from './src/components/CredentailForm/CredentialForm';
 TODO:
 
 look into note not saving/updating issue
-look into scroll bar issues
-Dark mode
+In dark mode when no items are there, theres is a bg color mismatch in home page
 Offile mode
 PWA
 */
