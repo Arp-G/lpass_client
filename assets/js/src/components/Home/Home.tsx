@@ -17,7 +17,7 @@ interface Props {
 }
 
 const Home: FC<Props> = () => {
-  const [allCredentials, lastpass]: [CredentialsHash, string] = useAppSelector(state => [state.main.allCredentials, state.main.lastpass]);
+  const [allCredentials, lastpass, online]: [CredentialsHash, string, boolean] = useAppSelector(state => [state.main.allCredentials, state.main.lastpass, state.main.online]);
   const dispatch = useAppDispatch();
   const history = useHistory();
   const [searchString, setSearchString] = useState<string>('');
@@ -90,10 +90,10 @@ const Home: FC<Props> = () => {
           }
         </ul>
       }
-      <RiAddCircleFill
+      {online && <RiAddCircleFill
         className="fixed bottom-6 right-3 text-6xl text-red-600 z-10 cursor-pointer"
         onClick={() => history.push("/credentials")}
-      />
+      />}
     </div>
   );
 };

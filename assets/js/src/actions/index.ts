@@ -4,6 +4,7 @@ import { batchActions } from 'redux-batched-actions';
 import { delMany } from "idb-keyval";
 import Api from './../api/api';
 import {
+  SAVE_CONNECTIVITY_STATUS,
   SIGN_IN,
   SIGN_OUT,
   SAVE_LPASS,
@@ -19,6 +20,7 @@ import {
 } from '../constants/actionTypes';
 import { Credential, MessageType } from '../Types/Types';
 
+const setConnectivityStatusAction = createAction<boolean>(SAVE_CONNECTIVITY_STATUS);
 const saveLpassPasswordAction = createAction<string | null>(SAVE_LPASS);
 const signInAction = createAction<string | null>(SIGN_IN);
 const signOutAction = createAction<void>(SIGN_OUT);
@@ -34,7 +36,7 @@ const toggleDarkModeAction = createAction<void>(TOGGLE_DARK_MODE);
 
 const handleForbiddenResponse = (dispatch: Dispatch<any>, error: any, elseCallback: () => void) => {
   const dispatchSignOut = signOut(dispatch);
-  console.log(error?.response?.status)
+
   if (error?.response?.status === 403) {
     dispatchSignOut();
     dispatch(alertAction({ message: 'Login expired, Login to continue!', type: 'WARNING', timeout: 3000 }));
@@ -42,6 +44,16 @@ const handleForbiddenResponse = (dispatch: Dispatch<any>, error: any, elseCallba
     elseCallback();
   }
 }
+
+export const setConnectivityStatus = (dispatch: Dispatch<any>) => {
+  return (status: boolean) => {
+    const actions: Action<any>[] = [setConnectivityStatusAction(status)];
+    if (!status) actions.push(alertAction({ message: 'You are Offline!', type: 'WARNING' }));
+
+    dispatch(createBatchAction(actions))
+  };
+};
+
 
 export const checkLoginStatusAndInitLocalState = (dispatch: Dispatch<any>) => {
   return (token: string | null, allCredentials: Credential[], darkMode: boolean | undefined) => {
@@ -207,5 +219,5 @@ export const clearAlert = (dispatch: Dispatch<any>) => () => dispatch(clearAlert
 export const toggleDarkMode = (dispatch: Dispatch<any>) => () => dispatch(toggleDarkModeAction());
 
 // Helper functions
-const createBatchAction = (actionArray: Action<any>[]) => batchActions(actionArray.filter(action => action));
+const createBatchAction = (actionArray: (Action<any>)[]) => batchActions(actionArray.filter(action => action));
 const getDummyId = () => `dummy-${Date.now().toString()}`;

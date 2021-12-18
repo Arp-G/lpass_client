@@ -1,5 +1,6 @@
 import { Action } from "redux";
 import {
+  SAVE_CONNECTIVITY_STATUS,
   SIGN_IN,
   SIGN_OUT,
   SAVE_LPASS,
@@ -16,6 +17,7 @@ import {
 import { CredentialsHash, Credential, AlertType } from '../Types/Types';
 
 export interface MainState {
+  online: boolean,
   token?: string,
   alert?: AlertType,
   syncModal: boolean,
@@ -30,6 +32,7 @@ interface ActionWithPayload<T> extends Action {
 }
 
 const initialState: MainState = {
+  online: true,
   token: undefined,
   alert: undefined,
   syncModal: false,
@@ -41,6 +44,9 @@ const initialState: MainState = {
 
 const mainReducer = (state = initialState, action: ActionWithPayload<any>) => {
   switch (action.type) {
+
+    case SAVE_CONNECTIVITY_STATUS:
+      return { ...state, online: action.payload }
 
     case SIGN_IN:
       return { ...state, token: action.payload };

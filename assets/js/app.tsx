@@ -1,12 +1,13 @@
 import React, { useEffect } from 'react';
 import { Route, Switch } from 'react-router-dom';
 import { set, getMany } from 'idb-keyval';
-import { checkLoginStatusAndInitLocalState } from './src/actions/index';
+import { setConnectivityStatus, checkLoginStatusAndInitLocalState } from './src/actions/index';
 import useAppDispatch from './src/hooks/useAppDispatch';
 import useAppSelector from './src/hooks/useAppSelector';
 import usePrevious from './src/hooks/usePrevious';
 import { CredentialsHash } from './src/Types/Types';
 import ProtectedRoute from './ProtectedRoute';
+import registerConnectivityListeners from './src/api/connectivity';
 import Layout from './src/components/Layout/Layout';
 import SignIn from './src/components/SignIn/SignIn';
 import Home from './src/components/Home/Home';
@@ -20,19 +21,24 @@ look into note not saving/updating issue
 In dark mode when no items are there, theres is a bg color mismatch in home page
 Offile mode
 PWA
+when going back from crednetail page sync starts
 */
 
 const LpassApp = () => {
   const dispatch = useAppDispatch();
-  const loadState = checkLoginStatusAndInitLocalState(dispatch);
+  const dispatchLoadState = checkLoginStatusAndInitLocalState(dispatch);
+  const dispatchConnectivityState = setConnectivityStatus(dispatch);
 
   // Serves as a check, used to display loading until persisted state is loaded into store.
   const [tokenLoaded, allCredentials, darkMode] = useAppSelector(state => [state.main.token, state.main.allCredentials, state.main.darkMode]);
 
+
+
   // On App load find and load persisted state in store
   useEffect(() => {
+    registerConnectivityListeners(dispatchConnectivityState);
     getMany(['token', 'allCredentials', 'darkMode'])
-      .then(([token, credentails, darkMode]) => loadState(token || null, credentails, darkMode))
+      .then(([token, credentails, darkMode]) => dispatchLoadState(token || null, credentails, darkMode))
   }, []);
 
   const previousAllCredentials = usePrevious<CredentialsHash>(allCredentials);

@@ -1,3 +1,4 @@
+export const SAVE_CONNECTIVITY_STATUS = 'SAVE_CONNECTIVITY_STATUS';
 export const SIGN_IN = 'SIGN_IN';
 export const SIGN_OUT = 'SIGN_OUT';
 export const SAVE_LPASS = 'SAVE_LPASS';

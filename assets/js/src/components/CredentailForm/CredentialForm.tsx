@@ -9,8 +9,7 @@ import useAppSelector from '../../hooks/useAppSelector';
 
 import Loader from '../Loader/Loader';
 
-interface Props {
-}
+interface Props {}
 
 interface MatchParams {
   id: string;
@@ -19,7 +18,7 @@ interface MatchParams {
 const CredentialForm: FC<Props> = () => {
   const dispatch = useAppDispatch();
   const history = useHistory();
-  const allCredential = useAppSelector(state => state.main.allCredentials);
+  const [online, allCredential] = useAppSelector(state => [state.main.online, state.main.allCredentials]);
   const urlParams: match<MatchParams> = useRouteMatch<MatchParams>();
   const mode = urlParams.params.id ? 'UPDATE' : 'CREATE';
   const credential = allCredential[urlParams.params.id];
@@ -134,7 +133,7 @@ const CredentialForm: FC<Props> = () => {
           />
         </section>
 
-        <section className="flex">
+        {online && <section className="flex">
           {loading
             ? <Loader />
             : <>
@@ -147,7 +146,7 @@ const CredentialForm: FC<Props> = () => {
               }
             </>
           }
-        </section>
+        </section>}
       </form>
     </div>
   );
