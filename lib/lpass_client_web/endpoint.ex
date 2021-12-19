@@ -20,7 +20,7 @@ defmodule LpassClientWeb.Endpoint do
     at: "/",
     from: :lpass_client,
     gzip: false,
-    only: ~w(assets fonts images favicon.ico robots.txt),
+    only: ~w(assets fonts images favicon.ico robots.txt manifest.json),
     headers: [{"Service-Worker-Allowed", "/"}] # This header allows service workers to be register at root
 
   # Code reloading can be explicitly enabled under the
