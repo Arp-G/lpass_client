@@ -16,6 +16,7 @@ import {
   CLEAR_ALERT,
   SET_SYNC_MODAL,
   TOGGLE_SYNC_LOADER,
+  SET_SYNCED,
   SAVE_DARK_MODE,
   TOGGLE_DARK_MODE
 } from '../constants/actionTypes';
@@ -31,6 +32,7 @@ const deleteCredentialAction = createAction<string>(DELETE_CREDENTIAL);
 const alertAction = createAction<{ message: string, type: MessageType, timeout?: number }>(SET_ALERT);
 const toggleSyncModalAction = createAction<boolean>(SET_SYNC_MODAL);
 const toggleSyncyingAction = createAction<void>(TOGGLE_SYNC_LOADER);
+const syncedOnceAction = createAction<void>(SET_SYNCED);
 const clearAlertAction = createAction<void>(CLEAR_ALERT);
 const saveDarkModeAction = createAction<boolean>(SAVE_DARK_MODE);
 const toggleDarkModeAction = createAction<void>(TOGGLE_DARK_MODE);
@@ -211,7 +213,8 @@ export const fetchAllCredentials = (dispatch: Dispatch<any>) => {
           toggleSyncModalAction(false),
           saveLpassPasswordAction(password),
           alertAction({ message: 'Synced successfully!', type: 'SUCCESS' }),
-          toggleSyncyingAction()
+          toggleSyncyingAction(),
+          syncedOnceAction()
         ]));
       }).catch(err => {
         console.log(err.message);

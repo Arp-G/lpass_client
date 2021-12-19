@@ -7,23 +7,21 @@ import useAppSelector from './src/hooks/useAppSelector';
 import usePrevious from './src/hooks/usePrevious';
 import { CredentialsHash } from './src/Types/Types';
 import ProtectedRoute from './ProtectedRoute';
-import registerConnectivityListeners, { handleConnection } from './src/api/connectivity';
+import registerConnectivityListeners from './src/api/connectivity';
 import Layout from './src/components/Layout/Layout';
 import SignIn from './src/components/SignIn/SignIn';
 import Home from './src/components/Home/Home';
 import SplashScreen from './src/components/SplashScreen/SplashScreen';
 import CredentialForm from './src/components/CredentailForm/CredentialForm';
 
-const CONNECTIVITY_POLL_INTERVAL = 10000;
-
 /*
 TODO:
 
 look into note not saving/updating issue
 In dark mode when no items are there, theres is a bg color mismatch in home page
-Offile mode
+Offile mode - done
 PWA
-when going back from crednetail page sync starts
+when going back from crednetail page sync starts - fixed
 */
 
 const LpassApp = () => {
@@ -44,10 +42,10 @@ const LpassApp = () => {
   }, []);
 
   // Every 10 second poll to update connectivity status
-  useEffect(() => {
-    const timer = setInterval(() => handleConnection(dispatchConnectivityState), CONNECTIVITY_POLL_INTERVAL);
-    return () => clearInterval(timer);
-  }, []);
+  // useEffect(() => {
+  //   const timer = setInterval(() => handleConnection(dispatchConnectivityState), 10000);
+  //   return () => clearInterval(timer);
+  // }, []);
 
   const previousAllCredentials = usePrevious<CredentialsHash>(allCredentials);
   const previousDarkMode = usePrevious<boolean | undefined>(darkMode);

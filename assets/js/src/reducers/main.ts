@@ -12,7 +12,8 @@ import {
   ADD_OR_UPDATE_CREDENTIAL,
   DELETE_CREDENTIAL,
   SAVE_DARK_MODE,
-  TOGGLE_DARK_MODE
+  TOGGLE_DARK_MODE,
+  SET_SYNCED
 } from '../constants/actionTypes';
 import { CredentialsHash, Credential, AlertType } from '../Types/Types';
 
@@ -24,6 +25,7 @@ export interface MainState {
   allCredentials: CredentialsHash,
   lastpass: string | null,
   syncying: boolean,
+  syncedOnce: boolean,
   darkMode: boolean | undefined
 }
 
@@ -39,6 +41,7 @@ const initialState: MainState = {
   allCredentials: {},
   lastpass: null,
   syncying: false,
+  syncedOnce: false,
   darkMode: undefined
 };
 
@@ -56,6 +59,9 @@ const mainReducer = (state = initialState, action: ActionWithPayload<any>) => {
 
     case SAVE_LPASS:
       return { ...state, lastpass: action.payload };
+
+    case SET_SYNCED:
+      return { ...state, syncedOnce: true };
 
     case SAVE_ALL_CREDENTIALS:
       const allCredentials = action.payload.reduce((acc: CredentialsHash, credential: Credential) => {

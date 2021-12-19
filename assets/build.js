@@ -15,11 +15,23 @@ const loader = {
 
 const plugins = [
   // Add and configure plugins here
+  // Custom copy plugin for esbuild(https://nx-plugins.netlify.app/derived/esbuild.html#copy)
+  // These paths are relative to "priv/static" since thats set as the outdir
   copy({
-    assets: {
-      from: ['./icons/*', 'manifest.json'],
-      to: ['./priv/static/assets'],
-    },
+    assets: [
+      {
+        from: './manifest.json',
+        to: '../.' // "priv/static/manifest.json"
+      },
+      {
+        from: './icons/*',
+        to: '../icons',
+      },
+      {
+        from: './screenshots/*',
+        to: '../screenshots'
+      }
+    ]
   }),
 ];
 
