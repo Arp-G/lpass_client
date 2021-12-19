@@ -48,10 +48,7 @@ const handleForbiddenResponse = (dispatch: Dispatch<any>, error: any, elseCallba
 
 export const setConnectivityStatus = (dispatch: Dispatch<any>) => {
   return (status: boolean) => {
-    const actions: Action<any>[] = [setConnectivityStatusAction(status)];
-    if (!status) actions.push(alertAction({ message: 'You are Offline!', type: 'WARNING' }));
-
-    dispatch(createBatchAction(actions))
+    dispatch(createBatchAction([setConnectivityStatusAction(status)]))
   };
 };
 

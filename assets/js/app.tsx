@@ -7,12 +7,14 @@ import useAppSelector from './src/hooks/useAppSelector';
 import usePrevious from './src/hooks/usePrevious';
 import { CredentialsHash } from './src/Types/Types';
 import ProtectedRoute from './ProtectedRoute';
-import registerConnectivityListeners from './src/api/connectivity';
+import registerConnectivityListeners, { handleConnection } from './src/api/connectivity';
 import Layout from './src/components/Layout/Layout';
 import SignIn from './src/components/SignIn/SignIn';
 import Home from './src/components/Home/Home';
 import SplashScreen from './src/components/SplashScreen/SplashScreen';
 import CredentialForm from './src/components/CredentailForm/CredentialForm';
+
+const CONNECTIVITY_POLL_INTERVAL = 10000;
 
 /*
 TODO:
@@ -30,13 +32,21 @@ const LpassApp = () => {
   const dispatchConnectivityState = setConnectivityStatus(dispatch);
 
   // Serves as a check, used to display loading until persisted state is loaded into store.
-  const [online, tokenLoaded, allCredentials, darkMode] = useAppSelector(state => [state.main.online, state.main.token, state.main.allCredentials, state.main.darkMode]);
+  const [tokenLoaded, allCredentials, darkMode] = useAppSelector(state => [state.main.token, state.main.allCredentials, state.main.darkMode]);
 
-  // On App load find and load persisted state in store
+  // On App load 
+  // Set connectivity status
+  // find and load persisted state in store
   useEffect(() => {
-    registerConnectivityListeners(online, dispatchConnectivityState);
+    registerConnectivityListeners(dispatchConnectivityState);
     getMany(['token', 'allCredentials', 'darkMode'])
       .then(([token, credentails, darkMode]) => dispatchLoadState(token || null, credentails, darkMode))
+  }, []);
+
+  // Every 10 second poll to update connectivity status
+  useEffect(() => {
+    const timer = setInterval(() => handleConnection(dispatchConnectivityState), CONNECTIVITY_POLL_INTERVAL);
+    return () => clearInterval(timer);
   }, []);
 
   const previousAllCredentials = usePrevious<CredentialsHash>(allCredentials);

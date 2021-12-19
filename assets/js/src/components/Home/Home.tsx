@@ -28,6 +28,8 @@ const Home: FC<Props> = () => {
   const openSyncModal = setSyncModal(dispatch);
 
   useEffect(() => {
+    if (!online) return;
+
     if (lastpass) {
       dispatchfetchAllCredentials(lastpass, setAllCredentials)
     } else if (Object.keys(allCredentials).length === 0) {

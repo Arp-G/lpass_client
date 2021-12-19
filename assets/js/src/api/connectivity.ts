@@ -14,36 +14,30 @@ export const isReachable = (url = window.location.origin) => {
    */
   return fetch(url, { method: 'HEAD', mode: 'no-cors' })
     .then(resp => resp && (resp.ok || resp.type === 'opaque'))
-    .catch(err => console.warn('[conn test failure]:', err));
+    .catch(_err => false);
 }
 
-const handleConnection = (onlineState: boolean, setOnline: (status: boolean) => void) => {
+/*
+  Update online state depending on connectivity status.
+  Don't update online state if state is already updated
+*/
+export const handleConnection = (setOnline: (status: boolean) => void) => {
   if (window.navigator.onLine) {
     isReachable(window.location.origin).then((isOnline) => {
-      if (isOnline && !onlineState) {
-        setOnline(true);
-        console.log('Check connectivity: true')
-      }
-      else if (!isOnline && onlineState) {
-         setOnline(false);
-         console.log('Check connectivity: false 1 ' + isOnline)
-      }
+      setOnline(isOnline || false);
     });
-  } else if (onlineState) {
-    console.log('Check connectivity: false 2')
+  } else {
     setOnline(false);
   }
 }
 
-export default (onlineState: boolean, setOnline: (status: boolean) => void) => {
-  // setInterval(() => handleConnection(onlineState, setOnline), 5000);
-
+export default (setOnline: (status: boolean) => void) => {
   window.addEventListener('online', () => {
     console.log('online event')
-    handleConnection(onlineState, setOnline)
+    handleConnection(setOnline)
   });
-  window.addEventListener('offline', () => handleConnection(onlineState, setOnline));
+  window.addEventListener('offline', () => handleConnection(setOnline));
 
   // Set initial state
-  handleConnection(onlineState, setOnline);
+  handleConnection(setOnline);
 };

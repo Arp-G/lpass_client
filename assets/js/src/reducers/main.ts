@@ -46,7 +46,7 @@ const mainReducer = (state = initialState, action: ActionWithPayload<any>) => {
   switch (action.type) {
 
     case SAVE_CONNECTIVITY_STATUS:
-      return { ...state, online: action.payload }
+      return state.online === action.payload ? state : { ...state, online: action.payload };
 
     case SIGN_IN:
       return { ...state, token: action.payload };
