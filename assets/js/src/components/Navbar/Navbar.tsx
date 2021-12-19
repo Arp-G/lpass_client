@@ -34,7 +34,7 @@ const Navbar: FC = () => {
       }
 
       {
-        !online && 
+        !online &&
         <div className="w-9 rounded-full bg-white ml-2 border-2" title="You are offline" >
           <MdOutlineCloudOff className="text-red-500 text-center" />
         </div>
@@ -42,7 +42,7 @@ const Navbar: FC = () => {
 
       <div className={`m-auto ${token ? 'relative left-4' : ''} text-3xl italic`}> Lastpass </div>
       {
-        token &&
+        token && online &&
         <div className="pr-2 cursor-pointer">
           <BiSync onClick={startSync} className={`origin-center ${syncying && 'animate-spin-slow'}`} />
         </div>

@@ -8,6 +8,22 @@
     <%= live_title_tag assigns[:page_title] || "LpassClient", suffix: " · Phoenix Framework" %>
     <link phx-track-static rel="stylesheet" href={Routes.static_path(@conn, "/assets/app.css")}/>
     <script defer phx-track-static type="text/javascript" src={Routes.static_path(@conn, "/assets/index.js")}></script>
+    <script>
+      // Check that service workers are supported
+      if ('serviceWorker' in navigator) {
+        // Use the window load event to keep the page load performant
+        window.addEventListener('load', () => {
+          /*
+            The service worker will be by default registered at 'assets/*' so it will intercept requests only at 'assets/*'
+            Setting the scope to root '/' allows it to intercept all requests.
+
+            However to make this work the service worker file should be served with the "Service-Worker-Allowed" header set to '/''
+            This is done under "Plug.Static" config in endpoint.ex
+          */
+          navigator.serviceWorker.register('./assets/service-worker.js', {scope: './'});
+        });
+      }
+    </script>
   </head>
   <body>
     <%= @inner_content %>

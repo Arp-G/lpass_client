@@ -5,6 +5,7 @@ import { MdSecurity } from 'react-icons/md';
 import { signIn } from '../../actions/index';
 import usePersistedState from '../../hooks/usePersistedState';
 import Loader from '../Loader/Loader';
+import useAppSelector from '../../hooks/useAppSelector';
 
 interface Props {
   // any props that come into the component
@@ -14,6 +15,7 @@ const SignIn: FC<Props> = () => {
   const dispatch = useAppDispatch();
   const history = useHistory();
   const signInUser = signIn(dispatch);
+  const online = useAppSelector((state) => state.main.online);
 
   const [lpassUsername, changeLpassUsername] = useState<string>('');
   const [serverPassword, changeServerPassword] = useState<string>('');
@@ -84,21 +86,25 @@ const SignIn: FC<Props> = () => {
             value={lpassPassword}
           />
         </section>
-        <section>
-          {loading ?
-            <div>
-              <span className="text-sm font-semibold font-mono italic text-red-600"> Accept any MFA notification if you have MFA enabled </span>
-              <Loader />
-            </div>
-            : <input
-              type="submit"
-              value="Sign In"
-              className={`p-2 italic bg-red-600 text-white rounded-xl m-3 mb-8 
+        {online
+          ? <section>
+            {loading ?
+              <div>
+                <span className="text-sm font-semibold font-mono italic text-red-600"> Accept any MFA notification if you have MFA enabled </span>
+                <Loader />
+              </div>
+              : <input
+                type="submit"
+                value="Sign In"
+                className={`p-2 italic bg-red-600 text-white rounded-xl m-3 mb-8 
               font-semibold ${!valid && 'opacity-50 cursor-not-allowed'}`
-              }
-              disabled={!valid} />
-          }
-        </section>
+                }
+                disabled={!valid} />
+            }
+          </section>
+          : <span className="mt-2 text-red-500 font-semibold"> You are offline! Go online to sign in. </span>
+        }
+
       </form>
     </div>
   );

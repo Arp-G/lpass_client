@@ -3,6 +3,7 @@ import { createAction, Action } from 'redux-actions';
 import { batchActions } from 'redux-batched-actions';
 import { delMany } from "idb-keyval";
 import Api from './../api/api';
+import { isReachable } from '../api/connectivity';
 import {
   SAVE_CONNECTIVITY_STATUS,
   SIGN_IN,
@@ -61,22 +62,44 @@ export const checkLoginStatusAndInitLocalState = (dispatch: Dispatch<any>) => {
     const dark = darkMode === undefined ? window.matchMedia('(prefers-color-scheme: dark)').matches : darkMode;
     dispatch(saveDarkModeAction(dark));
 
-    return Api.get('/login_status')
-      .then(response => {
+    /*
+      == Initial Auth Flow ==
+      - Attempt to check online status
+        - If online attempt to check login status on server
+          - If token present and logged in on server then go to HOME page else trigger sign out action
+          - If logged out sign out action
+        - If logged out
+          - If token present go to Home page
+          - If token not present trigger sign out action
+    */
+    isReachable().then(online => {
+      if (online) {
+        return Api.get('/login_status')
+          .then(response => {
 
-        if (!response?.data?.logged_in) {
-          dispatchSignOut();
-          return;
-        }
+            if (!response?.data?.logged_in) {
+              dispatchSignOut();
+              return;
+            }
 
+            dispatch(createBatchAction([
+              signInAction(token),
+              allCredentials && saveAllCredentialsAction(allCredentials)
+            ]));
+
+          }).catch(() => {
+            dispatchSignOut();
+          });
+      }
+      else if (token) {
         dispatch(createBatchAction([
           signInAction(token),
           allCredentials && saveAllCredentialsAction(allCredentials)
         ]));
-
-      }).catch(() => {
+      } else {
         dispatchSignOut();
-      });
+      }
+    });
   };
 }
 
@@ -112,7 +135,7 @@ export const signOut = (dispatch: Dispatch<any>, message = false) => {
 
     return Api.post('/sign_out')
       .then(() => message && actions.push(alertAction({ message: 'Logged out successfully!', type: 'SUCCESS', timeout: 3000 })))
-      .catch(() => message && actions.push(alertAction({ message: 'Something went wrong, logged out locally!', type: 'ERROR' })))
+      .catch(() => message && actions.push(alertAction({ message: 'Logged out locally!', type: 'ERROR' })))
       .finally(() => {
         delMany(['token', 'allCredentials'])
           .then(() => {

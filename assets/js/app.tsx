@@ -30,13 +30,11 @@ const LpassApp = () => {
   const dispatchConnectivityState = setConnectivityStatus(dispatch);
 
   // Serves as a check, used to display loading until persisted state is loaded into store.
-  const [tokenLoaded, allCredentials, darkMode] = useAppSelector(state => [state.main.token, state.main.allCredentials, state.main.darkMode]);
-
-
+  const [online, tokenLoaded, allCredentials, darkMode] = useAppSelector(state => [state.main.online, state.main.token, state.main.allCredentials, state.main.darkMode]);
 
   // On App load find and load persisted state in store
   useEffect(() => {
-    registerConnectivityListeners(dispatchConnectivityState);
+    registerConnectivityListeners(online, dispatchConnectivityState);
     getMany(['token', 'allCredentials', 'darkMode'])
       .then(([token, credentails, darkMode]) => dispatchLoadState(token || null, credentails, darkMode))
   }, []);
