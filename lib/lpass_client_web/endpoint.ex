@@ -19,7 +19,7 @@ defmodule LpassClientWeb.Endpoint do
   plug Plug.Static,
     at: "/",
     from: :lpass_client,
-    gzip: false,
+    gzip: true,
     only: ~w(assets fonts images icons screenshots favicon.ico robots.txt manifest.json),
     headers: [{"Service-Worker-Allowed", "/"}] # This header allows service workers to be register at root
 
