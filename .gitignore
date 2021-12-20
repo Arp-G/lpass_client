@@ -44,3 +44,6 @@ lpass_client-*.tar
 npm-debug.log
 /assets/node_modules/
 
+# Path were I build apk using bubble wrap
+/apk
+

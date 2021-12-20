@@ -17,11 +17,15 @@ import CredentialForm from './src/components/CredentailForm/CredentialForm';
 /*
 TODO:
 
+IT WORKS ON MOBILE! YAY! OFFILINE ALSO WORKS!
 look into note not saving/updating issue
-In dark mode when no items are there, theres is a bg color mismatch in home page
-Offile mode - done
-PWA
-when going back from crednetail page sync starts - fixed
+In dark mode when no items are there, there's is a bg color mismatch in home page
+message about MFS not center align when running in apk 
+without syncying the sorting wont work at times
+consider not clearing the idex db cache if server login check fails
+The no credentail found message streches entire width add some left, right padding or margin
+Consider adding a back button
+look into how to get rid of that browser header when running in apk
 */
 
 const LpassApp = () => {
