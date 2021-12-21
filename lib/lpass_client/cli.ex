@@ -224,7 +224,6 @@ defmodule LpassClient.Cli do
       field: false,
       "note-type": false
     ]
-
     cmd_args = build_args(default_args, args)
 
     data = [
@@ -260,7 +259,7 @@ defmodule LpassClient.Cli do
       end
 
     data =
-      if(is_nil(args[:notes]),
+      if(is_nil(args[:notes]) && is_nil(args["notes"]),
         do: data,
         else: data ++ [{"Notes", "\n#{args[:notes] || args["notes"]}"}]
       )
@@ -271,6 +270,9 @@ defmodule LpassClient.Cli do
       |> Enum.reject(&is_nil(elem(&1, 1)))
       |> Enum.map(fn {key, value} -> "#{key}: #{value}" end)
       |> Enum.join("\n")
+
+
+      IO.inspect("printf \"#{entry_data}\" | #{@lpass} #{type} #{cmd_args} #{Shell.escape(name_or_id)}");
 
     # Using printf instead of echo preserves lines breaks
     {resp, _exit_status} =

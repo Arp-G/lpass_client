@@ -149,22 +149,22 @@ export const signOut = (dispatch: Dispatch<any>, message = false) => {
 
 export const saveCredential = (dispatch: Dispatch<any>, mode: 'CREATE' | 'UPDATE') => {
   return (
-    { id, name, url, username, password, note }
-      : { id?: string, name: string, url: string, username: string, password: string, note: string }
+    { id, name, group, url, username, password, notes }
+      : { id?: string, name: string, group: string, url: string, username: string, password: string, notes: string }
   ) => {
     return (
       mode === 'CREATE' ?
-        Api.post('/credentials', { name, url, username, password, note }).then(response => {
+        Api.post('/credentials', { name, group, url, username, password, notes }).then(response => {
           const responsHasId = response.data.id && response.data.id !== 0;
           dispatch(createBatchAction([
-            responsHasId && addOrUpdateCredentialAction({ id: response.data.id, name, url, username, password, note }),
+            responsHasId && addOrUpdateCredentialAction({ id: response.data.id, name, group, url, username, password, notes }),
             alertAction({ message: 'Saved!', type: 'SUCCESS' })
           ]));
         }) :
-        Api.patch(`/credentials/${id}`, { name, url, username, password, note })
+        Api.patch(`/credentials/${id}`, { name, group, url, username, password, notes })
           .then(_response => {
             dispatch(createBatchAction([
-              addOrUpdateCredentialAction({ id: id || getDummyId(), name, url, username, password, note }),
+              addOrUpdateCredentialAction({ id: id || getDummyId(), name, group, url, username, password, notes }),
               alertAction({ message: 'Updated!', type: 'SUCCESS' })
             ]));
           })

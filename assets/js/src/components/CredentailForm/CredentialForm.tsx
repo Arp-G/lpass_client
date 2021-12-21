@@ -9,11 +9,14 @@ import useAppSelector from '../../hooks/useAppSelector';
 
 import Loader from '../Loader/Loader';
 
-interface Props {}
+interface Props { }
 
 interface MatchParams {
   id: string;
 }
+
+// TODO give id(counter) and include user defined groups
+const groups = ['Social', 'Bank', 'Business', 'Education', 'Email', 'Entertainment', 'Finance', 'Games', 'News/Reference', 'Productivity', 'Tools', 'Secure Notes', 'Shopping'];
 
 const CredentialForm: FC<Props> = () => {
   const dispatch = useAppDispatch();
@@ -23,13 +26,14 @@ const CredentialForm: FC<Props> = () => {
   const mode = urlParams.params.id ? 'UPDATE' : 'CREATE';
   const credential = allCredential[urlParams.params.id];
   const [name, changeName] = useState<string>(credential?.name || '');
+  const [group, changeGroup] = useState<string>(credential?.group || '');
   const [url, changeUrl] = useState<string>(credential?.url || '');
   const [username, changeUsername] = useState<string>(credential?.username || '');
   const [password, changePassword] = useState<string>(credential?.password || '');
   const [passwordVisible, toggleShowPassword] = useState<boolean>(false);
-  const [note, changeNote] = useState<string>(credential?.note || '');
+  const [notes, changeNote] = useState<string>(credential?.notes || '');
   const [loading, setLoading] = useState<boolean>(false);
-  const saveCredentialData = saveCredential(dispatch, mode);
+  const dispatchSaveCredential = saveCredential(dispatch, mode);
   const deleteCredentialData = deleteCredential(dispatch);
 
   // TODO: Attempt to fetch id from server when dummy id
@@ -41,7 +45,7 @@ const CredentialForm: FC<Props> = () => {
   const onSubmit = async (event: SyntheticEvent) => {
     event.preventDefault();
     setLoading(true);
-    saveCredentialData({ id: urlParams.params.id, name, url, username, password, note })
+    dispatchSaveCredential({ id: urlParams.params.id, name, group, url, username, password, notes })
       .finally(() => {
         setLoading(false);
         history.push("/");
@@ -82,6 +86,20 @@ const CredentialForm: FC<Props> = () => {
             onChange={(e) => changeName(e.target.value)}
             value={name}
           />
+        </section>
+
+        <section className="w-11/12 mt-6">
+          <label className="font-semibold text-red-500"> Group/Folder: </label>
+          <input className="focus:outline-none focus:border-pink-800 border-b-2 border-black w-full p-2 pt-0"
+            type="text"
+            name="group"
+            onChange={(e) => changeGroup(e.target.value)}
+            value={group}
+            list="groupInput"
+          />
+          <datalist id="groupInput">
+            {groups.map((group => <option value={group} key={group}/>))}
+          </datalist>
         </section>
 
         <section className="w-11/12 mt-6">
@@ -128,7 +146,7 @@ const CredentialForm: FC<Props> = () => {
           <textarea className="mt-4 ring-2 rounded-md focus:outline-none focus:ring-pink-800 ring-black w-full p-2 pt-0"
             name="note"
             onChange={(e) => changeNote(e.target.value)}
-            value={note}
+            value={notes}
             rows={3}
           />
         </section>

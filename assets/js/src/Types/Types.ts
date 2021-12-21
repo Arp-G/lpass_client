@@ -7,7 +7,7 @@ export type Credential = {
   favicon?: string,
   username?: string,
   password?: string,
-  note?: string,
+  notes?: string,
   group?: string,
   last_modified_gmt?: string,
   last_touch?: string
