@@ -321,27 +321,20 @@ defmodule LpassClient.Api do
       credentials
       |> Enum.map(fn ~M{%Credential url} ->
         Task.async(fn ->
-          case HTTPoison.get("https://www.google.com/s2/favicons?sz=128&domain_url=#{url}") do
-            {:ok, response} ->
-              body = Map.get(response, :body)
+          %URI{host: host, scheme: scheme} = URI.parse(url)
 
-              cond do
-                is_nil(body) ->
-                  nil
-
-                body
-                |> String.slice(0..3)
-                |> String.downcase()
-                |> String.trim()
-                |> String.starts_with?(["<!", "ht", "<ht"]) ->
-                  nil
-
-                true ->
-                  Base.encode64(body)
-              end
-
-            _ ->
+          cond do
+            is_nil(host) || is_nil(scheme) ->
               nil
+
+            (is_binary(host) && String.trim(host) == "") ||
+                (is_binary(scheme) && String.trim(scheme) == "") ->
+              nil
+
+            true ->
+              %URI{host: host, scheme: scheme, path: "/favicon.ico"}
+              |> URI.to_string()
+              |> fetch_icon()
           end
         end)
       end)
@@ -363,5 +356,30 @@ defmodule LpassClient.Api do
     Enum.zip_with(credentials, favi_icons, fn credential, favicon ->
       %{credential | favicon: favicon}
     end)
+  end
+
+  defp fetch_icon(url) do
+    case HTTPoison.get(url) do
+      {:ok, response} ->
+        body = Map.get(response, :body)
+
+        cond do
+          is_nil(body) ->
+            nil
+
+          body
+          |> String.slice(0..3)
+          |> String.downcase()
+          |> String.trim()
+          |> String.starts_with?(["<!", "ht", "<ht"]) ->
+            nil
+
+          true ->
+            Base.encode64(body)
+        end
+
+      _ ->
+        nil
+    end
   end
 end
