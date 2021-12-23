@@ -90,7 +90,12 @@ const SignIn: FC<Props> = () => {
           ? <section>
             {loading ?
               <div>
-                <span className="text-sm font-semibold font-mono italic text-red-600"> Accept any MFA notification if you have MFA enabled </span>
+                <div className="text-sm font-semibold font-mono italic text-red-600 text-center">
+                  Accept any MFA notifications
+                </div>
+                <div className="text-sm font-semibold font-mono italic text-red-600 text-center">
+                  if you have MFA enabled
+                </div>
                 <Loader />
               </div>
               : <input

@@ -20,7 +20,6 @@ TODO:
 IT WORKS ON MOBILE! YAY! OFFILINE ALSO WORKS!
 look into note not saving/updating issue - works but does not work when note has line breaks, and maybe special chars
 use " Stale While Revalidate" strat for js before launching script for prod
-group - TODO give id and include user defined groups and test properly with and wothout group working, saving in local state, offline, loading exiting group, etc
 Sometimes after login still app asks for password for sync
 In dark mode when no items are there, there's is a bg color mismatch in home page
 message about MFS not center align when running in apk 
