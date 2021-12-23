@@ -15,13 +15,10 @@ interface MatchParams {
   id: string;
 }
 
-// TODO give id(counter) and include user defined groups
-const groups = ['Social', 'Bank', 'Business', 'Education', 'Email', 'Entertainment', 'Finance', 'Games', 'News/Reference', 'Productivity', 'Tools', 'Secure Notes', 'Shopping'];
-
 const CredentialForm: FC<Props> = () => {
   const dispatch = useAppDispatch();
   const history = useHistory();
-  const [online, allCredential] = useAppSelector(state => [state.main.online, state.main.allCredentials]);
+  const [online, allCredential, groups] = useAppSelector(state => [state.main.online, state.main.allCredentials, state.main.groups]);
   const urlParams: match<MatchParams> = useRouteMatch<MatchParams>();
   const mode = urlParams.params.id ? 'UPDATE' : 'CREATE';
   const credential = allCredential[urlParams.params.id];
@@ -98,7 +95,7 @@ const CredentialForm: FC<Props> = () => {
             list="groupInput"
           />
           <datalist id="groupInput">
-            {groups.map((group => <option value={group} key={group}/>))}
+            {groups.map((({ id, group }) => <option value={group} key={id} />))}
           </datalist>
         </section>
 

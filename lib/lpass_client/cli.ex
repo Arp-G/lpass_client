@@ -271,9 +271,6 @@ defmodule LpassClient.Cli do
       |> Enum.map(fn {key, value} -> "#{key}: #{value}" end)
       |> Enum.join("\n")
 
-
-      IO.inspect("printf \"#{entry_data}\" | #{@lpass} #{type} #{cmd_args} #{Shell.escape(name_or_id)}");
-
     # Using printf instead of echo preserves lines breaks
     {resp, _exit_status} =
       System.shell(

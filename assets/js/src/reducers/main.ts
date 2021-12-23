@@ -15,7 +15,8 @@ import {
   TOGGLE_DARK_MODE,
   SET_SYNCED
 } from '../constants/actionTypes';
-import { CredentialsHash, Credential, AlertType } from '../Types/Types';
+import { CredentialsHash, Credential, Group, AlertType } from '../Types/Types';
+import { PREDEFINED_GROUPS } from '../constants/misc';
 
 export interface MainState {
   online: boolean,
@@ -26,7 +27,8 @@ export interface MainState {
   lastpass: string | null,
   syncying: boolean,
   syncedOnce: boolean,
-  darkMode: boolean | undefined
+  darkMode: boolean | undefined,
+  groups: Group[]
 }
 
 interface ActionWithPayload<T> extends Action {
@@ -42,7 +44,8 @@ const initialState: MainState = {
   lastpass: null,
   syncying: false,
   syncedOnce: false,
-  darkMode: undefined
+  darkMode: undefined,
+  groups: []
 };
 
 const mainReducer = (state = initialState, action: ActionWithPayload<any>) => {
@@ -69,7 +72,22 @@ const mainReducer = (state = initialState, action: ActionWithPayload<any>) => {
         return acc;
       }, {});
 
-      return { ...state, allCredentials };
+      const groups = new Set<string>(
+        [
+          ...action.payload.map(({ group }: { group: string }) => group),
+          ...PREDEFINED_GROUPS
+        ].filter(group => group).map((group: string) => group.toLowerCase())
+      );
+
+      return {
+        ...state,
+        allCredentials,
+        groups: Array.from(groups)
+          .sort()
+          .map(function (group, id) {
+            return { group: group.charAt(0).toUpperCase() + group.slice(1), id };
+          })
+      };
 
     case ADD_OR_UPDATE_CREDENTIAL:
       const currDateTime = new Date().toISOString();
