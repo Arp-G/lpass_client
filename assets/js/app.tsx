@@ -20,10 +20,11 @@ TODO:
 IT WORKS ON MOBILE! YAY! OFFLINE ALSO WORKS!
 look into note not saving/updating issue - works but does not work when note has line breaks, and maybe special chars
 use "Stale While Revalidate" strat for js before launching script for prod
-Sometimes after login still app asks for password for sync
+Sometimes after login still app asks for password for sync - No repro
 without syncing the sorting wont work at times - No Repro
 consider not clearing the idex db cache if server login check fails
 look into how to get rid of that browser header when running in apk
+add docker file
 */
 
 const LpassApp = () => {
