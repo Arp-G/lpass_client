@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "deploy": "cd .. && mix assets.deploy && rm -f _build/esbuild"
+    "deploy": "NODE_ENV=production tailwindcss --postcss --minify -i css/app.css -o ../priv/static/assets/app.css"
   },
   "dependencies": {
     "@types/react": "^17.0.33",
