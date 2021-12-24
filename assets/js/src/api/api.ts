@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { get } from 'idb-keyval';
-export const API_BASE = 'http://localhost:4000/api';
+import { API_URL } from 'env';
+export const API_BASE = `${API_URL}/api`;
 
 const axiosInstance = axios.create({
     baseURL: API_BASE
