@@ -31,7 +31,7 @@ const addOrUpdateCredentialAction = createAction<Credential>(ADD_OR_UPDATE_CREDE
 const deleteCredentialAction = createAction<string>(DELETE_CREDENTIAL);
 const alertAction = createAction<{ message: string, type: MessageType, timeout?: number }>(SET_ALERT);
 const toggleSyncModalAction = createAction<boolean>(SET_SYNC_MODAL);
-const toggleSyncyingAction = createAction<void>(TOGGLE_SYNC_LOADER);
+const toggleSyncingAction = createAction<void>(TOGGLE_SYNC_LOADER);
 const syncedOnceAction = createAction<void>(SET_SYNCED);
 const clearAlertAction = createAction<void>(CLEAR_ALERT);
 const saveDarkModeAction = createAction<boolean>(SAVE_DARK_MODE);
@@ -155,9 +155,9 @@ export const saveCredential = (dispatch: Dispatch<any>, mode: 'CREATE' | 'UPDATE
     return (
       mode === 'CREATE' ?
         Api.post('/credentials', { name, group, url, username, password, notes }).then(response => {
-          const responsHasId = response.data.id && response.data.id !== 0;
+          const responseHasId = response.data.id && response.data.id !== 0;
           dispatch(createBatchAction([
-            responsHasId && addOrUpdateCredentialAction({ id: response.data.id, name, group, url, username, password, notes }),
+            responseHasId && addOrUpdateCredentialAction({ id: response.data.id, name, group, url, username, password, notes }),
             alertAction({ message: 'Saved!', type: 'SUCCESS' })
           ]));
         }) :
@@ -201,7 +201,7 @@ export const deleteCredential = (dispatch: Dispatch<any>) => {
 
 export const fetchAllCredentials = (dispatch: Dispatch<any>) => {
   return (password: string, setAllCredentials: (credentials: Credential[] | undefined) => void) => {
-    dispatch(toggleSyncyingAction());
+    dispatch(toggleSyncingAction());
 
     return Api.post('/export', { password })
       .then(response => {
@@ -213,7 +213,7 @@ export const fetchAllCredentials = (dispatch: Dispatch<any>) => {
           toggleSyncModalAction(false),
           saveLpassPasswordAction(password),
           alertAction({ message: 'Synced successfully!', type: 'SUCCESS' }),
-          toggleSyncyingAction(),
+          toggleSyncingAction(),
           syncedOnceAction()
         ]));
       }).catch(err => {
@@ -224,7 +224,7 @@ export const fetchAllCredentials = (dispatch: Dispatch<any>) => {
           () => dispatch(
             createBatchAction([
               alertAction({ message: 'Failed, try again!', type: 'ERROR' }),
-              toggleSyncyingAction()
+              toggleSyncingAction()
             ]))
         );
       });

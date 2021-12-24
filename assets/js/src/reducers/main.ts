@@ -25,7 +25,7 @@ export interface MainState {
   syncModal: boolean,
   allCredentials: CredentialsHash,
   lastpass: string | null,
-  syncying: boolean,
+  syncing: boolean,
   syncedOnce: boolean,
   darkMode: boolean | undefined,
   groups: Group[]
@@ -42,7 +42,7 @@ const initialState: MainState = {
   syncModal: false,
   allCredentials: {},
   lastpass: null,
-  syncying: false,
+  syncing: false,
   syncedOnce: false,
   darkMode: undefined,
   groups: []
@@ -113,7 +113,7 @@ const mainReducer = (state = initialState, action: ActionWithPayload<any>) => {
       return { ...state, syncModal: action.payload };
 
     case TOGGLE_SYNC_LOADER:
-      return { ...state, syncying: !state.syncying };
+      return { ...state, syncing: !state.syncing };
 
     case SET_ALERT:
       return { ...state, alert: action.payload };

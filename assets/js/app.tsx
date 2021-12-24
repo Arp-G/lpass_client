@@ -17,16 +17,12 @@ import CredentialForm from './src/components/CredentailForm/CredentialForm';
 /*
 TODO:
 
-IT WORKS ON MOBILE! YAY! OFFILINE ALSO WORKS!
+IT WORKS ON MOBILE! YAY! OFFLINE ALSO WORKS!
 look into note not saving/updating issue - works but does not work when note has line breaks, and maybe special chars
-use " Stale While Revalidate" strat for js before launching script for prod
+use "Stale While Revalidate" strat for js before launching script for prod
 Sometimes after login still app asks for password for sync
-In dark mode when no items are there, there's is a bg color mismatch in home page
-message about MFS not center align when running in apk 
-without syncying the sorting wont work at times
+without syncing the sorting wont work at times - No Repro
 consider not clearing the idex db cache if server login check fails
-The no credentail found message streches entire width add some left, right padding or margin
-Consider adding a back button
 look into how to get rid of that browser header when running in apk
 */
 
@@ -38,13 +34,13 @@ const LpassApp = () => {
   // Serves as a check, used to display loading until persisted state is loaded into store.
   const [tokenLoaded, allCredentials, darkMode] = useAppSelector(state => [state.main.token, state.main.allCredentials, state.main.darkMode]);
 
-  // On App load 
+  // On App load
   // Set connectivity status
   // find and load persisted state in store
   useEffect(() => {
     registerConnectivityListeners(dispatchConnectivityState);
     getMany(['token', 'allCredentials', 'darkMode'])
-      .then(([token, credentails, darkMode]) => dispatchLoadState(token || null, credentails, darkMode))
+      .then(([token, credentials, darkMode]) => dispatchLoadState(token || null, credentials, darkMode))
   }, []);
 
   // Every 10 second poll to update connectivity status
@@ -56,9 +52,9 @@ const LpassApp = () => {
   const previousAllCredentials = usePrevious<CredentialsHash>(allCredentials);
   const previousDarkMode = usePrevious<boolean | undefined>(darkMode);
 
-  // When credentails list changes persist new changes to indexDB
+  // When credentials list changes persist new changes to indexDB
   useEffect(() => {
-    // Prevent uneeded indexDB update when loading state initially
+    // Prevent unneeded indexDB update when loading state initially
     if (
       previousAllCredentials &&
       Object.keys(previousAllCredentials).length !== 0 &&

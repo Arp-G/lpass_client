@@ -9,19 +9,19 @@ import useAppDispatch from '../../hooks/useAppDispatch';
 import usePersistedState from '../../hooks/usePersistedState';
 
 const Navbar: FC = () => {
-  const [online, token, lastpass, syncying, darkMode]: [boolean, string, string, boolean, boolean] =
-    useAppSelector(state => [state.main.online, state.main.token, state.main.lastpass, state.main.syncying, state.main.darkMode]);
+  const [online, token, lastpass, syncing, darkMode]: [boolean, string, string, boolean, boolean] =
+    useAppSelector(state => [state.main.online, state.main.token, state.main.lastpass, state.main.syncing, state.main.darkMode]);
   const dispatch = useAppDispatch();
-  const [_allCrendentails, setAllCredentials] = usePersistedState<Credential[] | undefined>('allCredentials', undefined);
+  const [_allCredentials, setAllCredentials] = usePersistedState<Credential[] | undefined>('allCredentials', undefined);
   const dispatchSignOut = signOut(dispatch, true);
-  const dispatchfetchAllCredentials = fetchAllCredentials(dispatch);
+  const dispatchFetchAllCredentials = fetchAllCredentials(dispatch);
   const dispatchSetSyncModal = setSyncModal(dispatch);
   const dispatchToggleDarkMode = toggleDarkMode(dispatch);
 
   const startSync = () => {
-    if (syncying) return;
+    if (syncing) return;
 
-    if (lastpass) dispatchfetchAllCredentials(lastpass, setAllCredentials)
+    if (lastpass) dispatchFetchAllCredentials(lastpass, setAllCredentials)
     else dispatchSetSyncModal(true);
   }
 
@@ -44,7 +44,7 @@ const Navbar: FC = () => {
       {
         token && online &&
         <div className="pr-2 cursor-pointer">
-          <BiSync onClick={startSync} className={`origin-center ${syncying && 'animate-spin-slow'}`} />
+          <BiSync onClick={startSync} className={`origin-center ${syncing && 'animate-spin-slow'}`} />
         </div>
       }
       {

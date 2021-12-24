@@ -2,6 +2,7 @@
 const path = require('path');
 const esbuild = require('esbuild');
 const copy = require('esbuild-plugin-copy').default;
+const envFilePlugin = require('esbuild-envfile-plugin');
 const args = process.argv.slice(2);
 const watch = args.includes('--watch');
 const deploy = args.includes('--deploy');
@@ -33,6 +34,9 @@ const plugins = [
       }
     ]
   }),
+  // Plugin to load .env files
+  // looks for a .env file in the current project file's directory, or any parent, until it finds one.
+  envFilePlugin
 ];
 
 let opts = {

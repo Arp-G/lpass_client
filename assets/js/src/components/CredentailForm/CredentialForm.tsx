@@ -3,6 +3,7 @@ import { useRouteMatch, useHistory, match } from 'react-router-dom';
 import PasswordStrengthBar from 'react-password-strength-bar';
 import { BsFillEyeFill, BsFillEyeSlashFill } from 'react-icons/bs';
 import { ImBin } from 'react-icons/im';
+import { IoMdArrowRoundBack } from 'react-icons/io';
 import { saveCredential, deleteCredential } from '../../actions/index';
 import useAppDispatch from '../../hooks/useAppDispatch';
 import useAppSelector from '../../hooks/useAppSelector';
@@ -36,7 +37,7 @@ const CredentialForm: FC<Props> = () => {
   // TODO: Attempt to fetch id from server when dummy id
   const isDummyId = urlParams.params.id && (urlParams.params.id.startsWith('dummy-') || urlParams.params.id == '0');
 
-  // Disable submit button untill all fields have some value
+  // Disable submit button until all fields have some value
   const valid = name.length;
 
   const onSubmit = async (event: SyntheticEvent) => {
@@ -71,11 +72,15 @@ const CredentialForm: FC<Props> = () => {
 
   return (
     <div className="dark:bg-gray-400">
+      <IoMdArrowRoundBack
+        className="text-3xl rounded-full bg-white dark:bg-black dark:text-white m-2"
+        onClick={() => history.push('/')}
+      />
       <form
         className="flex flex-col items-center text-lg"
         onSubmit={onSubmit}
       >
-        <section className="w-11/12 mt-6">
+        <section className="w-11/12">
           <label className="font-semibold text-red-500"> Name: </label>
           <input className="focus:outline-none focus:border-pink-800 border-b-2 border-black w-full p-2 pt-0"
             type="text"

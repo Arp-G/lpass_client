@@ -24,8 +24,8 @@ const Home: FC<Props> = () => {
   const [searchString, setSearchString] = useState<string>('');
   const [sortModal, setSortModal] = useState<boolean>(false);
   const [sortOrder, setSortOrder] = useState<SortOrder>('A-Z');
-  const [_allCrendentails, setAllCredentials] = usePersistedState<Credential[] | undefined>('allCredentials', undefined);
-  const dispatchfetchAllCredentials = fetchAllCredentials(dispatch);
+  const [_allCredentials, setAllCredentials] = usePersistedState<Credential[] | undefined>('allCredentials', undefined);
+  const dispatchFetchAllCredentials = fetchAllCredentials(dispatch);
   const openSyncModal = setSyncModal(dispatch);
 
   useEffect(() => {
@@ -33,14 +33,16 @@ const Home: FC<Props> = () => {
 
     // If last pass password present and not synced before then sync
     if (lastpass && !syncedOnce) {
-      dispatchfetchAllCredentials(lastpass, setAllCredentials);
+      dispatchFetchAllCredentials(lastpass, setAllCredentials);
     } else if (Object.keys(allCredentials).length === 0) {
       openSyncModal(true);
     }
   }, [])
 
+  const credentialsPresent = Object.keys(allCredentials).length !== 0;
+
   return (
-    <div className="dark:bg-gray-600">
+    <div className={`${credentialsPresent ? 'dark:bg-gray-600' : 'dark:bg-gray-400'}`}>
       <div className="border-2 flex justify-between bg-gray-200 sticky top-16">
         <input
           type="text"
@@ -61,14 +63,14 @@ const Home: FC<Props> = () => {
           setSortOrder={setSortOrder}
           sortOrder={sortOrder}
         />}
-      {Object.keys(allCredentials).length === 0
+      {!credentialsPresent
         ?
         <div className="h-96 mt-16 flex flex-col justify-center items-center">
-          <div className="text-center text-lg font-semibold italic">
+          <div className="text-center text-lg font-semibold italic w-4/5">
             No credentials found, click on <BiSync className="text-2xl font-bold text-center inline text-red-600" /> to sync with server.
           </div>
           <div>
-            <RiLockPasswordLine className="text-6xl text-red-500 mt-4" />
+            <RiLockPasswordLine className="text-6xl text-red-600 mt-4" />
           </div>
         </div>
         : <ul className="w-11/12 m-auto">

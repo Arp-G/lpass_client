@@ -6,6 +6,7 @@ import { signIn } from '../../actions/index';
 import usePersistedState from '../../hooks/usePersistedState';
 import Loader from '../Loader/Loader';
 import useAppSelector from '../../hooks/useAppSelector';
+import { USERNAME } from 'env';
 
 interface Props {
   // any props that come into the component
@@ -25,7 +26,7 @@ const SignIn: FC<Props> = () => {
   // Custom hook to fetch and save auth token to indexDB
   const [token, setToken] = usePersistedState<string | undefined>('token', undefined);
 
-  // Disable submit button untill all fields have some value
+  // Disable submit button until all fields have some value
   const valid = lpassUsername.length && lpassPassword.length && serverPassword.length;
 
   // Once the token is available navigate to home
@@ -42,12 +43,14 @@ const SignIn: FC<Props> = () => {
       .finally(() => setLoading(false))
   }
 
+  const userName = USERNAME || 'LastPass User';
+
   return (
     <div className="flex flex-col items-center dark:bg-gray-400">
       <div className="mt-16">
         <MdSecurity className="text-6xl text-red-600" />
       </div>
-      <div className="text-xl mt-2"> 👋 Hey Arpan! Sign In here </div>
+      <div className="text-xl mt-2"> {`👋 Hey ${userName}! Sign In here`} </div>
 
       <form
         className="flex flex-col items-center text-lg"
@@ -55,7 +58,7 @@ const SignIn: FC<Props> = () => {
       >
         <section>
           <input
-            className="p-1 pl-2 rounded-full italic mt-4 mb-4 
+            className="p-1 pl-2 rounded-full italic mt-4 mb-4
             w-64 focus:outline-none ring-2 focus:ring-red-500"
             type="text"
             name="lpassUsername"
@@ -66,7 +69,7 @@ const SignIn: FC<Props> = () => {
         </section>
         <section>
           <input
-            className="p-1 pl-2 rounded-full italic mt-4 mb-4 
+            className="p-1 pl-2 rounded-full italic mt-4 mb-4
             w-64 focus:outline-none ring-2 focus:ring-red-500"
             type="password"
             name="serverPassword"
@@ -77,7 +80,7 @@ const SignIn: FC<Props> = () => {
         </section>
         <section>
           <input
-            className="p-1 pl-2 rounded-full italic mt-4 mb-4 
+            className="p-1 pl-2 rounded-full italic mt-4 mb-4
             w-64 focus:outline-none ring-2 focus:ring-red-500"
             type="password"
             name="lpassPassword"
@@ -101,7 +104,7 @@ const SignIn: FC<Props> = () => {
               : <input
                 type="submit"
                 value="Sign In"
-                className={`p-2 italic bg-red-600 text-white rounded-xl m-3 mb-8 
+                className={`p-2 italic bg-red-600 text-white rounded-xl m-3 mb-8
               font-semibold ${!valid && 'opacity-50 cursor-not-allowed'}`
                 }
                 disabled={!valid} />

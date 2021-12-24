@@ -31,7 +31,7 @@ registerRoute(
 /*
 Cache CSS, JS, and Web Worker requests with a Stale While Revalidate strategy
 
-The stale-while-revalidate pattern allows you to respond to the request as quickly as possible with a cached response if available, 
+The stale-while-revalidate pattern allows you to respond to the request as quickly as possible with a cached response if available,
 falling back to the network request if it's not cached. The network request is then used to update the cache.
 */
 registerRoute(
