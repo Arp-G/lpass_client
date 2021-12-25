@@ -13,7 +13,8 @@ config :lpass_client, LpassClientWeb.Endpoint,
   server: true,
   secret_key_base: secret_key_base,
   url: [host: "${APP_NAME}.gigalixirapp.com", port: 443],
-  check_origin: false
+  check_origin: false,
+  cache_static_manifest: "priv/static/cache_manifest.json"
 
 # Do not print debug messages in production
 config :logger, level: :info
