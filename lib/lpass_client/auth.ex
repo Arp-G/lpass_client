@@ -2,7 +2,7 @@ defmodule LpassClient.Auth do
   def sign_in(lpassUsername, serverPassword, lpassPassword) do
     application_auth = Application.get_env(:lpass_client, LpassClient.Auth)
 
-    if application_auth[:password] == serverPassword do
+    if Argon2.verify_pass(serverPassword, application_auth[:password]) do
       case LpassClient.Api.login(lpassUsername, lpassPassword) do
         {:success, true} ->
           {:ok,
