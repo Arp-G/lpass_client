@@ -34,6 +34,7 @@ defmodule LpassClient.MixProject do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
+      {:argon2_elixir, "~> 2.4"},
       {:phoenix, "~> 1.6.2"},
       {:phoenix_html, "~> 3.0"},
       {:phoenix_live_reload, "~> 1.2", only: :dev},
@@ -52,21 +53,21 @@ defmodule LpassClient.MixProject do
     ]
   end
 
-  # Aliases are shortcuts or tasks specific to the current project.
-  # For example, to install project dependencies and perform other setup tasks, run:
-  #
-  #     $ mix setup
-  #
-  # See the documentation for `Mix` for more info on aliases.
   defp aliases do
     [
       setup: ["deps.get", "cmd --cd assets npm install"],
       "assets.deploy": [
+        # Load envs for react app
+        "create_assets_env",
+
         # Use tailwind cli to build css ouput at "priv/static/assets/app.css"
-        "cmd --cd assets npm run deploy",
         # (Uses --postcss flag with tailwind cli which allows us to add extra postcss plugins via the postcss.config.js)
+        "cmd --cd assets npm run deploy",
+
         # Invokes a custom build script for ESBuild to build js
         "cmd --cd assets node build.js --deploy",
+
+        # Generate digest for static assets
         "phx.digest"
       ]
     ]
