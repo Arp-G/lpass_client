@@ -20,7 +20,7 @@ config :logger, level: :info
 
 config :lpass_client, LpassClient.Auth,
   secret_key: secret_key_base,
-  salt: System.env("SALT"),
-  password: System.env("SERVER_PASSWORD")
+  salt: System.get_env("SALT"),
+  password: System.get_env("SERVER_PASSWORD")
 
 if File.exists?("config/prod.secret.exs"), do: import_config("prod.secret.exs")
