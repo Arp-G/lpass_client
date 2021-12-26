@@ -25,6 +25,12 @@ defmodule LpassClient.Cli do
     default_args = [trust: true, "plaintext-key": false, force: true]
     cmd_args = build_args(default_args, args)
 
+    require Logger
+
+    Logger.info(
+      "echo #{Shell.escape(password)} | LPASS_DISABLE_PINENTRY=1 #{@lpass} login #{cmd_args} #{Shell.escape(username)}"
+    )
+
     {resp, _exit_status} =
       System.shell(
         "echo #{Shell.escape(password)} | LPASS_DISABLE_PINENTRY=1 #{@lpass} login #{cmd_args} #{Shell.escape(username)}",
@@ -224,6 +230,7 @@ defmodule LpassClient.Cli do
       field: false,
       "note-type": false
     ]
+
     cmd_args = build_args(default_args, args)
 
     data = [

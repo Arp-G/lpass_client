@@ -29,7 +29,7 @@
   ],
   "start_url": "/",
   "background_color": "#3367D6",
-  "display": "minimal-ui",
+  "display": "fullscreen",
   "scope": "/",
   "theme_color": "#dc2626",
   "shortcuts": [],
