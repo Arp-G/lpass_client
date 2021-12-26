@@ -29,7 +29,7 @@ const CredentialForm: FC<Props> = () => {
   const [username, changeUsername] = useState<string>(credential?.username || '');
   const [password, changePassword] = useState<string>(credential?.password || '');
   const [passwordVisible, toggleShowPassword] = useState<boolean>(false);
-  const [notes, changeNote] = useState<string>(credential?.notes || '');
+  const [notes, changeNote] = useState<string>(credential?.note || '');
   const [loading, setLoading] = useState<boolean>(false);
   const dispatchSaveCredential = saveCredential(dispatch, mode);
   const deleteCredentialData = deleteCredential(dispatch);
