@@ -17,7 +17,7 @@ config :lpass_client, LpassClientWeb.Endpoint,
   cache_static_manifest: "priv/static/cache_manifest.json"
 
 # Do not print debug messages in production
-config :logger, level: :info
+config :logger, level: :debug
 
 config :lpass_client, LpassClient.Auth,
   secret_key: secret_key_base,
