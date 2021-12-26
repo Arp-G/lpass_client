@@ -3,7 +3,7 @@ defmodule LpassClient.Cli do
     This module provides an elixir api for low level access to lpass cli tool
   """
   alias LpassClient.Shell
-  @lpass "lpass"
+  @lpass "./lpass"
 
   @doc """
   The login subcommand will initialize a local cache and configuration folder, then attempt to authenticate itself with the LastPass servers,
