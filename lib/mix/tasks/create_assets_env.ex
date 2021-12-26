@@ -8,6 +8,8 @@ defmodule Mix.Tasks.CreateAssetsEnv do
 
   @impl Mix.Task
   def run(_args) do
+    Mix.shell().info("==== Create ENV file for PWA ===")
+    Mix.shell().info("Setting envs: #{Enum.join(@envs, ", ")}")
     content =
       Enum.reduce(
         @envs,
@@ -17,6 +19,7 @@ defmodule Mix.Tasks.CreateAssetsEnv do
         end
       )
 
-    File.write("assets/.env", content, [])
+    res = File.write("assets/.env", content, [])
+    Mix.shell().info("Done: #{inspect(res)}")
   end
 end
