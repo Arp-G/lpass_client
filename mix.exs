@@ -58,12 +58,12 @@ defmodule LpassClient.MixProject do
       setup: ["deps.get", "cmd --cd assets npm install"],
       "assets.deploy": [
         # Load envs for react app
-        "create_assets_env",
+        # "create_assets_env",
 
         # For CSS: Use tailwind cli to build css ouput at "priv/static/assets/app.css"
         # (Uses --postcss flag with tailwind cli which allows us to add extra postcss plugins via the postcss.config.js)
         # FOr JS/TS: Invokes a custom build script for ESBuild to build js
-        "cmd --cd assets npm run deploy",
+        # "cmd --cd assets npm run deploy",
 
         # Remove uneeded esbuild files
         # "cmd rm -f _build/esbuild*",
