@@ -1,4 +1,5 @@
 import { Dispatch } from 'react';
+import { flushSync } from 'react-dom';
 import { createAction, Action } from 'redux-actions';
 import { batchActions } from 'redux-batched-actions';
 import { delMany } from "idb-keyval";
@@ -83,10 +84,13 @@ export const checkLoginStatusAndInitLocalState = (dispatch: Dispatch<any>) => {
             //   return;
             // }
 
-            dispatch(createBatchAction([
-              signInAction(token),
-              allCredentials && saveAllCredentialsAction(allCredentials)
-            ]));
+            // Flush state to ensure state is updated, so that login popup won't appear on home screen upon login
+            flushSync(() => {
+              dispatch(createBatchAction([
+                signInAction(token),
+                allCredentials && saveAllCredentialsAction(allCredentials)
+              ]));
+            });
 
           }).catch(() => {
             dispatchSignOut();
