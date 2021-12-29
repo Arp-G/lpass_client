@@ -74,12 +74,14 @@ export const checkLoginStatusAndInitLocalState = (dispatch: Dispatch<any>) => {
     isReachable().then(online => {
       if (online) {
         return Api.get('/login_status')
-          .then(response => {
+          .then(_response => {
 
-            if (!response?.data?.logged_in) {
-              dispatchSignOut();
-              return;
-            }
+            // Uncommenting this code will result in user kick out if server logs out
+            // Currently even if server logs out user will remain until a request goes to server resulting in forbidden response which leads to user kick out
+            // if (!response?.data?.logged_in) {
+            //   dispatchSignOut();
+            //   return;
+            // }
 
             dispatch(createBatchAction([
               signInAction(token),
