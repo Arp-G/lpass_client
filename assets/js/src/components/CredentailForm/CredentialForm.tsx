@@ -72,10 +72,13 @@ const CredentialForm: FC<Props> = () => {
 
   return (
     <div className="dark:bg-gray-400">
-      <IoMdArrowRoundBack
-        className="text-3xl rounded-full bg-white dark:bg-black dark:text-white m-2"
-        onClick={() => history.push('/')}
-      />
+      <div className='h-12 top-16 sticky z-50 bg-white dark:bg-gray-400'>
+        <IoMdArrowRoundBack
+          className="text-3xl rounded-full bg-white dark:bg-black dark:text-white m-2 fixed"
+          onClick={() => history.push('/')}
+        />
+      </div>
+
       <form
         className="flex flex-col items-center text-lg"
         onSubmit={onSubmit}
@@ -90,7 +93,7 @@ const CredentialForm: FC<Props> = () => {
           />
         </section>
 
-        <section className="w-11/12 mt-6">
+        <section className="w-11/12 mt-4">
           <label className="font-semibold text-red-500"> Group/Folder: </label>
           <input className="focus:outline-none focus:border-pink-800 border-b-2 border-black w-full p-2 pt-0"
             type="text"
@@ -104,7 +107,7 @@ const CredentialForm: FC<Props> = () => {
           </datalist>
         </section>
 
-        <section className="w-11/12 mt-6">
+        <section className="w-11/12 mt-4">
           <label className="font-semibold text-red-500"> URL: </label>
           <input className="focus:outline-none focus:border-pink-800 border-b-2 border-black w-full p-2 pt-0"
             type="text"
@@ -114,7 +117,7 @@ const CredentialForm: FC<Props> = () => {
           />
         </section>
 
-        <section className="w-11/12 mt-6">
+        <section className="w-11/12 mt-4">
           <label className="font-semibold text-red-500"> Username: </label>
           <input className="focus:outline-none focus:border-pink-800 border-b-2 border-black w-full p-2 pt-0"
             type="text"
@@ -124,7 +127,7 @@ const CredentialForm: FC<Props> = () => {
           />
         </section>
 
-        <section className="w-11/12 mt-6">
+        <section className="w-11/12 mt-4">
           <div className="w-full inline-block">
             <label className="font-semibold text-red-500"> Password: </label>
             <input className="focus:outline-none focus:border-pink-800 border-b-2 border-black w-full p-2 pt-0"
@@ -133,7 +136,7 @@ const CredentialForm: FC<Props> = () => {
               onChange={(e) => changePassword(e.target.value)}
               value={password}
             />
-            <PasswordStrengthBar password={password} />
+            <PasswordStrengthBar password={password} className='m' />
           </div>
           {
             passwordVisible
@@ -143,7 +146,7 @@ const CredentialForm: FC<Props> = () => {
 
         </section>
 
-        <section className="w-11/12 mt-6">
+        <section className="w-11/12">
           <label className="font-semibold text-red-500"> Note: </label>
           <textarea className="mt-4 ring-2 rounded-md focus:outline-none focus:ring-pink-800 ring-black w-full p-2 pt-0"
             name="note"
