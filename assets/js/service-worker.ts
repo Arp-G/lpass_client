@@ -41,7 +41,7 @@ registerRoute(
     request.destination === 'script' ||
     request.destination === 'worker',
   // Use a Stale While Revalidate caching strategy
-  new NetworkFirst({
+  new StaleWhileRevalidate({
     // Put all cached files in a cache named 'assets'
     cacheName: 'assets',
     plugins: [
