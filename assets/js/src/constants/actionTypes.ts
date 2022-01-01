@@ -12,3 +12,4 @@ export const DELETE_CREDENTIAL = 'DELETE_CREDENTIAL';
 export const TOGGLE_DARK_MODE = 'TOGGLE_DARK_MODE';
 export const SAVE_DARK_MODE = 'SAVE_DARK_MODE';
 export const SET_SYNCED = 'SET_SYNCED';
+export const SET_OFFLINE = 'SET_OFFLINE';

@@ -3,6 +3,7 @@ import { FcLock } from 'react-icons/fc';
 import { AiOutlineCloseCircle } from 'react-icons/ai'
 import { setSyncModal, fetchAllCredentials } from '../../actions/index';
 import useAppDispatch from '../../hooks/useAppDispatch';
+import useAppSelector from '../../hooks/useAppSelector';
 import Loader from '../Loader/Loader';
 import usePersistedState from '../../hooks/usePersistedState';
 import useIsMounted from '../../hooks/useIsMounted';
@@ -14,6 +15,7 @@ const PasswordModal: FC<Props> = () => {
   const [password, setPassword] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
   const dispatch = useAppDispatch();
+  const allowOffline = useAppSelector(state => state.main.allowOffline);
   const isMounted = useIsMounted();
   const [_allCrendentails, setAllCredentials] = usePersistedState<Credential[] | undefined>('allCredentials', undefined);
   const dispatchfetchAllCredentials = fetchAllCredentials(dispatch);
@@ -23,7 +25,7 @@ const PasswordModal: FC<Props> = () => {
     event.preventDefault();
     setLoading(true);
 
-    dispatchfetchAllCredentials(password, setAllCredentials)
+    dispatchfetchAllCredentials(password, allowOffline, setAllCredentials)
       .finally(() => isMounted && setLoading(false))
   }
 

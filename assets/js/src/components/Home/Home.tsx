@@ -17,8 +17,21 @@ interface Props {
 }
 
 const Home: FC<Props> = () => {
-  const [allCredentials, lastpass, online, syncedOnce]: [CredentialsHash, string, boolean, boolean] = useAppSelector(state =>
-    [state.main.allCredentials, state.main.lastpass, state.main.online, state.main.syncedOnce]);
+  const [
+    allCredentials,
+    lastpass,
+    online,
+    syncedOnce,
+    allowOffline
+  ]: [CredentialsHash, string, boolean, boolean, boolean] =
+    useAppSelector(state =>
+      [
+        state.main.allCredentials,
+        state.main.lastpass,
+        state.main.online,
+        state.main.syncedOnce,
+        state.main.allowOffline
+      ]);
   const dispatch = useAppDispatch();
   const history = useHistory();
   const [searchString, setSearchString] = useState<string>('');
@@ -33,11 +46,11 @@ const Home: FC<Props> = () => {
 
     // If last pass password present and not synced before then sync
     if (lastpass && !syncedOnce) {
-      dispatchFetchAllCredentials(lastpass, setAllCredentials);
+      dispatchFetchAllCredentials(lastpass, allowOffline, setAllCredentials);
     } else if (Object.keys(allCredentials).length === 0) {
       openSyncModal(true);
     }
-  }, [])
+  }, []);
 
   const credentialsPresent = Object.keys(allCredentials).length !== 0;
 

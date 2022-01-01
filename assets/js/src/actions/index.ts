@@ -19,7 +19,8 @@ import {
   TOGGLE_SYNC_LOADER,
   SET_SYNCED,
   SAVE_DARK_MODE,
-  TOGGLE_DARK_MODE
+  TOGGLE_DARK_MODE,
+  SET_OFFLINE
 } from '../constants/actionTypes';
 import { Credential, MessageType } from '../Types/Types';
 
@@ -37,6 +38,7 @@ const syncedOnceAction = createAction<void>(SET_SYNCED);
 const clearAlertAction = createAction<void>(CLEAR_ALERT);
 const saveDarkModeAction = createAction<boolean>(SAVE_DARK_MODE);
 const toggleDarkModeAction = createAction<void>(TOGGLE_DARK_MODE);
+const setOfflineAction = createAction<boolean>(SET_OFFLINE);
 
 const handleForbiddenResponse = (dispatch: Dispatch<any>, error: any, elseCallback: () => void) => {
   const dispatchSignOut = signOut(dispatch);
@@ -54,7 +56,6 @@ export const setConnectivityStatus = (dispatch: Dispatch<any>) => {
     dispatch(createBatchAction([setConnectivityStatusAction(status)]))
   };
 };
-
 
 export const checkLoginStatusAndInitLocalState = (dispatch: Dispatch<any>) => {
   return (token: string | null, allCredentials: Credential[], darkMode: boolean | undefined) => {
@@ -74,21 +75,22 @@ export const checkLoginStatusAndInitLocalState = (dispatch: Dispatch<any>) => {
     */
     isReachable().then(online => {
       if (online) {
-        return Api.get('/login_status')
-          .then(_response => {
+        return Api.get('/status')
+          .then(response => {
 
             // Uncommenting this code will result in user kick out if server logs out
             // Currently even if server logs out user will remain until a request goes to server resulting in forbidden response which leads to user kick out
-            // if (!response?.data?.logged_in) {
-            //   dispatchSignOut();
-            //   return;
-            // }
+            if (!response?.data?.logged_in) {
+              dispatchSignOut();
+              return;
+            }
 
             // Flush state to ensure state is updated, so that login popup won't appear on home screen upon login
             flushSync(() => {
               dispatch(createBatchAction([
                 signInAction(token),
-                allCredentials && saveAllCredentialsAction(allCredentials)
+                allCredentials && saveAllCredentialsAction(allCredentials),
+                setOfflineAction(!!response?.data?.allow_offline)
               ]));
             });
 
@@ -206,13 +208,13 @@ export const deleteCredential = (dispatch: Dispatch<any>) => {
 };
 
 export const fetchAllCredentials = (dispatch: Dispatch<any>) => {
-  return (password: string, setAllCredentials: (credentials: Credential[] | undefined) => void) => {
+  return (password: string, allowOffline: boolean, setAllCredentials: (credentials: Credential[] | undefined) => void) => {
     dispatch(toggleSyncingAction());
 
     return Api.post('/export', { password })
       .then(response => {
         // Save in index db
-        setAllCredentials(response.data.data);
+        allowOffline && setAllCredentials(response.data.data);
 
         dispatch(createBatchAction([
           saveAllCredentialsAction(response.data.data),

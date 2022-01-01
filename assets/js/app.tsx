@@ -14,26 +14,14 @@ import Home from './src/components/Home/Home';
 import SplashScreen from './src/components/SplashScreen/SplashScreen';
 import CredentialForm from './src/components/CredentailForm/CredentialForm';
 
-/*
-TODO:
-
-IT WORKS ON MOBILE! YAY! OFFLINE ALSO WORKS!
-look into note not saving/updating issue - works but does not work when note has line breaks, and maybe special chars
-use "Stale While Revalidate" strat for js before launching script for prod
-Sometimes after login still app asks for password for sync - No repro
-without syncing the sorting wont work at times - No Repro
-consider not clearing the idex db cache if server login check fails
-look into how to get rid of that browser header when running in apk
-add docker file
-*/
-
 const LpassApp = () => {
   const dispatch = useAppDispatch();
   const dispatchLoadState = checkLoginStatusAndInitLocalState(dispatch);
   const dispatchConnectivityState = setConnectivityStatus(dispatch);
 
   // Serves as a check, used to display loading until persisted state is loaded into store.
-  const [tokenLoaded, allCredentials, darkMode] = useAppSelector(state => [state.main.token, state.main.allCredentials, state.main.darkMode]);
+  const [tokenLoaded, allCredentials, darkMode, allowOffline] = useAppSelector(state => [
+    state.main.token, state.main.allCredentials, state.main.darkMode, state.main.allowOffline]);
 
   // On App load
   // Set connectivity status
@@ -61,9 +49,10 @@ const LpassApp = () => {
       Object.keys(previousAllCredentials).length !== 0 &&
       Object.keys(allCredentials).length > 0
     ) {
-      set('allCredentials', Object.values(allCredentials))
+      if (allowOffline)
+        set('allCredentials', Object.values(allCredentials))
     }
-  }, [allCredentials]);
+  }, [allCredentials, allowOffline]);
 
   // When dark mode preference changes persist new change to indexDB
   useEffect(() => {

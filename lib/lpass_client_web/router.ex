@@ -22,7 +22,7 @@ defmodule LpassClientWeb.Router do
     pipe_through [:api]
 
     post "/sign_in", AuthController, :sign_in
-    get "/login_status", CredentialsController, :status
+    get "/status", CredentialsController, :status
   end
 
   scope "/api", LpassClientWeb do

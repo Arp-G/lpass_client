@@ -13,7 +13,8 @@ import {
   DELETE_CREDENTIAL,
   SAVE_DARK_MODE,
   TOGGLE_DARK_MODE,
-  SET_SYNCED
+  SET_SYNCED,
+  SET_OFFLINE
 } from '../constants/actionTypes';
 import { CredentialsHash, Credential, Group, AlertType } from '../Types/Types';
 import { PREDEFINED_GROUPS } from '../constants/misc';
@@ -28,7 +29,8 @@ export interface MainState {
   syncing: boolean,
   syncedOnce: boolean,
   darkMode: boolean | undefined,
-  groups: Group[]
+  groups: Group[],
+  allowOffline: boolean
 }
 
 interface ActionWithPayload<T> extends Action {
@@ -45,7 +47,8 @@ const initialState: MainState = {
   syncing: false,
   syncedOnce: false,
   darkMode: undefined,
-  groups: []
+  groups: [],
+  allowOffline: false
 };
 
 const mainReducer = (state = initialState, action: ActionWithPayload<any>) => {
@@ -122,10 +125,13 @@ const mainReducer = (state = initialState, action: ActionWithPayload<any>) => {
       return { ...state, alert: undefined };
 
     case SAVE_DARK_MODE:
-      return { ...state, darkMode: action.payload }
+      return { ...state, darkMode: action.payload };
 
     case TOGGLE_DARK_MODE:
-      return { ...state, darkMode: !state.darkMode }
+      return { ...state, darkMode: !state.darkMode };
+
+    case SET_OFFLINE:
+      return { ...state, allowOffline: action.payload };
 
     default:
       return state;

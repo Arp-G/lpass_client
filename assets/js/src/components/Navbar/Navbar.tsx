@@ -9,8 +9,8 @@ import useAppDispatch from '../../hooks/useAppDispatch';
 import usePersistedState from '../../hooks/usePersistedState';
 
 const Navbar: FC = () => {
-  const [online, token, lastpass, syncing, darkMode]: [boolean, string, string, boolean, boolean] =
-    useAppSelector(state => [state.main.online, state.main.token, state.main.lastpass, state.main.syncing, state.main.darkMode]);
+  const [online, token, lastpass, syncing, darkMode, allowOffline]: [boolean, string, string, boolean, boolean, boolean] =
+    useAppSelector(state => [state.main.online, state.main.token, state.main.lastpass, state.main.syncing, state.main.darkMode, state.main.allowOffline]);
   const dispatch = useAppDispatch();
   const [_allCredentials, setAllCredentials] = usePersistedState<Credential[] | undefined>('allCredentials', undefined);
   const dispatchSignOut = signOut(dispatch, true);
@@ -21,7 +21,7 @@ const Navbar: FC = () => {
   const startSync = () => {
     if (syncing) return;
 
-    if (lastpass) dispatchFetchAllCredentials(lastpass, setAllCredentials)
+    if (lastpass) dispatchFetchAllCredentials(lastpass, allowOffline, setAllCredentials)
     else dispatchSetSyncModal(true);
   }
 

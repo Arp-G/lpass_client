@@ -1,11 +1,9 @@
 import Config
 
-# For development, we disable any cache and enable
-# debugging and code reloading.
-#
-# The watchers configuration can be used to run external
-# watchers to your application. For example, we use it
-# with esbuild to bundle .js and .css sources.
+# Set if app will store credentails locally for offline viewing.
+# WARNING: Can lead to security issues
+config :lpass_client, allow_offline: false
+
 config :lpass_client, LpassClientWeb.Endpoint,
   # Binding to loopback ipv4 address prevents access from other machines.
   # Change to `ip: {0, 0, 0, 0}` to allow access from other machines.

@@ -7,6 +7,10 @@ secret_key_base =
     You can generate one by calling: mix phx.gen.secret
     """
 
+# Set if app will store credentails locally for offline viewing.
+# WARNING: Can lead to security issues
+config :lpass_client, allow_offline: System.get_env("ALLOW_OFFLINE") || false
+
 config :lpass_client, LpassClientWeb.Endpoint,
   load_from_system_env: true,
   http: [port: {:system, "PORT"}],
