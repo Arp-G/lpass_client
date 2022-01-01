@@ -49,6 +49,7 @@ defmodule LpassClient.MixProject do
       {:dialyxir, "~> 0.5.0", only: [:dev], runtime: false},
       {:shorter_maps, "~> 2.0"},
       {:nimble_csv, "~> 1.1"},
+      {:hackney, "~> 1.18"},
       {:httpoison, "~> 1.8"}
     ]
   end

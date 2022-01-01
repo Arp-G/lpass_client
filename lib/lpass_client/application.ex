@@ -17,6 +17,12 @@ defmodule LpassClient.Application do
       # Genserver to periodically sync local app with lastpass server
       LpassClient.Syncer,
 
+      # Genserver to cache data
+      LpassClient.Cache,
+
+      # Custom hackney pool ":main" to serve more number of concurrent connections
+      :hackney_pool.child_spec(:main, timeout: 15_000, max_connections: 100),
+
       # Start the Endpoint (http/https)
       LpassClientWeb.Endpoint
 

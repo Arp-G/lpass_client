@@ -9,7 +9,7 @@ defmodule LpassClient.Api do
 
   @type error() :: {:error, :forbidden} | {:error, String.t()}
 
-  @max_sync_wait_time 10000
+  @max_sync_wait_time 10_000
 
   @doc """
   Login to Lastpass
@@ -358,8 +358,14 @@ defmodule LpassClient.Api do
     end)
   end
 
-  defp fetch_icon(url) do
-    case HTTPoison.get(url) do
+  defp fetch_icon(url),
+    do: if(from_cache = LpassClient.Cache.get(url), do: from_cache, else: get_favi_icon(url))
+
+  defp get_favi_icon(url) do
+    case HTTPoison.get("https://www.google.com/s2/favicons?sz=128&domain_url=#{url}", [],
+           follow_redirect: true,
+           hackney: [pool: :main]
+         ) do
       {:ok, response} ->
         body = Map.get(response, :body)
 
@@ -375,7 +381,9 @@ defmodule LpassClient.Api do
             nil
 
           true ->
-            Base.encode64(body)
+            encoded = Base.encode64(body)
+            LpassClient.Cache.put(url, encoded)
+            encoded
         end
 
       _ ->
