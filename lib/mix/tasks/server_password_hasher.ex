@@ -1,5 +1,5 @@
 defmodule Mix.Tasks.ServerPasswordHasher do
-  @moduledoc "Generates hashed server password, run using: `mix serverpasswordhasher \"serverpassword\"`"
+  @moduledoc "Generates hashed server password, run using: `mix server_password_hasher \"serverpassword\"`"
   @shortdoc "Generates hashed server password"
 
   use Mix.Task
